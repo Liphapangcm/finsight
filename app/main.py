@@ -12,7 +12,7 @@ from app.styles.theme import apply_theme, nav_bar
 from app.pages.landing    import render_landing
 from app.pages.assessment import render_assessment
 from app.pages.results    import render_results
-
+from app.pages.loan_sim   import render_loan_simulator
 # ── Page config — must be FIRST streamlit call ────────────────────
 st.set_page_config(
     page_title           = "FinSight — Credit Scoring",

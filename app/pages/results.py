@@ -112,7 +112,7 @@ def render_results():
                 unsafe_allow_html=True)
 
     # ── Action buttons ────────────────────────────────────────────
-    col1, col2, col3 = st.columns(3)
+    col1, col2, col3, col4= st.columns(4)
 
     with col1:
         if st.button("🔄 New Assessment", use_container_width=True):
@@ -124,11 +124,16 @@ def render_results():
             st.rerun()
 
     with col2:
+        if st.button("🏦 Simulate a Loan", use_container_width=True):
+            st.session_state['page'] = 'loan_simulator'
+            st.rerun()
+
+    with col3:
         if st.button("🏠 Home", use_container_width=True):
             st.session_state['page'] = 'landing'
             st.rerun()
 
-    with col3:
+    with col4:
         # ── PDF Download ──────────────────────────────────────────
         if st.button("📄 Generate PDF Report", use_container_width=True):
             with st.spinner("Building your PDF report..."):

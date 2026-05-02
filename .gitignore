@@ -1,25 +1,24 @@
-# Virtual environment - Don't commit
+# Secrets — NEVER commit
+.env
+.streamlit/secrets.toml
+.streamlit/secret.toml
+
+# Virtual environment
 venv/
 env/
-.env
 .venv/
 
 # Python cache
-___pycache__/
+__pycache__/
 *.pyc
 *.pyo
-*.pyd
-.Python
 
-# Model artifacts - too large for git
+# Model artifacts
 models/*.pkl
 
 # Database
 *.db
-.sqlite
-
-# Streamlit secrets
-.streamlit/secrets.toml
+*.sqlite
 
 # Training data
 ml/data/raw/

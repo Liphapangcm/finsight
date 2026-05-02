@@ -1,6 +1,4 @@
-# Secrets — NEVER commit
-.env
-.streamlit/secrets.toml
+# .streamlit/secrets.toml 
 .streamlit/secret.toml
 
 # Virtual environment

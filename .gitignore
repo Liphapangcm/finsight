@@ -1,1 +1,9 @@
-venv/\n.env\n*.db\nmodels/*.pkl\nml/data/raw/
+venv/
+.env
+*.db
+__pycache__/
+*.pyc
+*.pyo
+.DS_Store
+.streamlit/secrets.toml
+ml/data/raw/

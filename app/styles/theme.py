@@ -1,670 +1,620 @@
-# app/styles/theme.py
 """
-FinSight Premium Theme — Dark Luxury Fintech
-Deep space navy + gold/teal accent system
-Glassmorphism cards, animated reveals, screenshot-worthy results
+FinSight Professional Theme
+Aesthetic: Palantir / Stripe / Bloomberg — light, precise, data-focused.
+Clean navy header system, white content areas, electric blue accents.
 """
-
 import streamlit as st
 
 COLORS = {
-    "bg_primary":    "#070B14",
-    "bg_secondary":  "#0D1526",
-    "bg_card":       "#111827",
-    "bg_glass":      "rgba(255,255,255,0.04)",
-    "border_glass":  "rgba(255,255,255,0.08)",
-    "border_accent": "rgba(0,212,170,0.3)",
-    "primary":       "#00D4AA",
-    "primary_dark":  "#00A882",
-    "gold":          "#F5C842",
-    "gold_light":    "#FFE08A",
-    "text_primary":  "#F0F4FF",
-    "text_secondary":"#8B9CC8",
-    "text_muted":    "#4A5578",
-    "success":       "#10D98A",
-    "warning":       "#F5A623",
-    "danger":        "#FF4D6A",
-    "excellent":     "#00D4AA",
-    "good":          "#10D98A",
-    "fair":          "#F5A623",
-    "poor":          "#FF4D6A",
+    "navy":           "#0A1F44",
+    "navy_mid":       "#112553",
+    "navy_light":     "#1A3260",
+    "blue":           "#2D7FF9",
+    "blue_hover":     "#1A6FE8",
+    "blue_light":     "#EBF3FF",
+    "blue_mid":       "#DBEAFE",
+    "teal":           "#00C2A8",
+    "teal_light":     "#E6FAF8",
+    "bg":             "#F5F7FA",
+    "bg_white":       "#FFFFFF",
+    "bg_subtle":      "#F0F2F6",
+    "text":           "#1A1A1A",
+    "text_secondary": "#4B5563",
+    "text_muted":     "#9CA3AF",
+    "text_inverse":   "#FFFFFF",
+    "border":         "#E5E7EB",
+    "border_strong":  "#D1D5DB",
+    "success":        "#059669",
+    "success_light":  "#ECFDF5",
+    "warning":        "#D97706",
+    "warning_light":  "#FFFBEB",
+    "danger":         "#DC2626",
+    "danger_light":   "#FEF2F2",
+    "poor":           "#DC2626",
+    "fair":           "#D97706",
+    "good":           "#059669",
+    "excellent":      "#00C2A8",
 }
 
 SCORE_COLORS = {
-    "Poor":      "#FF4D6A",
-    "Fair":      "#F5A623",
-    "Good":      "#10D98A",
-    "Excellent": "#00D4AA",
-}
-
-SCORE_GRADIENTS = {
-    "Poor":      "linear-gradient(135deg, #FF4D6A, #C0392B)",
-    "Fair":      "linear-gradient(135deg, #F5A623, #E67E22)",
-    "Good":      "linear-gradient(135deg, #10D98A, #059669)",
-    "Excellent": "linear-gradient(135deg, #00D4AA, #0891B2)",
+    "Poor":      COLORS["poor"],
+    "Fair":      COLORS["fair"],
+    "Good":      COLORS["good"],
+    "Excellent": COLORS["excellent"],
 }
 
 
 def apply_theme():
     st.markdown(f"""
     <style>
-    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
-    /* ── Reset & Base ── */
-    .stApp {{
-        background: {COLORS['bg_primary']};
-        font-family: 'Space Grotesk', sans-serif;
-        color: {COLORS['text_primary']};
+    *,*::before,*::after{{box-sizing:border-box;}}
+
+    .stApp{{
+        background:{COLORS['bg']};
+        font-family:'Plus Jakarta Sans',sans-serif;
+        color:{COLORS['text']};
     }}
-    .stApp::before {{
-        content: '';
-        position: fixed;
-        top: 0; left: 0; right: 0; bottom: 0;
-        background:
-            radial-gradient(ellipse 80% 50% at 20% -10%,
-                rgba(0,212,170,0.12) 0%, transparent 60%),
-            radial-gradient(ellipse 60% 40% at 80% 110%,
-                rgba(245,200,66,0.08) 0%, transparent 55%),
-            radial-gradient(ellipse 40% 60% at 50% 50%,
-                rgba(13,21,38,0.9) 0%, transparent 100%);
-        pointer-events: none;
-        z-index: 0;
+    #MainMenu,footer,header{{visibility:hidden;}}
+    .stDeployButton{{display:none;}}
+    section[data-testid="stSidebar"]{{display:none;}}
+    .main .block-container{{
+        padding-top:0!important;
+        max-width:1140px;
+        padding-left:2rem;
+        padding-right:2rem;
     }}
 
-    /* ── Hide Streamlit chrome ── */
-    #MainMenu, footer, header {{ visibility: hidden; }}
-    .stDeployButton {{ display: none; }}
-    section[data-testid="stSidebar"] {{ display: none; }}
-
-    /* ── Main content on top of bg ── */
-    .main .block-container {{
-        position: relative;
-        z-index: 1;
-        padding-top: 0 !important;
-        max-width: 1100px;
+    /* ── Topbar ── */
+    .fs-topbar{{
+        background:{COLORS['navy']};
+        padding:0 2rem;
+        height:54px;
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        margin:-4rem -2rem 2rem -2rem;
+        position:sticky;
+        top:0;
+        z-index:999;
+        border-bottom:1px solid {COLORS['navy_mid']};
+    }}
+    .fs-logo{{
+        font-weight:800;
+        font-size:1.1rem;
+        color:white;
+        letter-spacing:-0.3px;
+        display:flex;
+        align-items:center;
+        gap:0.5rem;
+    }}
+    .fs-logo-dot{{
+        width:7px;height:7px;
+        border-radius:50%;
+        background:{COLORS['blue']};
+    }}
+    .fs-nav-center{{
+        display:flex;
+        align-items:center;
+        gap:2px;
+    }}
+    .fs-nav-link{{
+        font-size:0.8rem;
+        font-weight:500;
+        color:rgba(255,255,255,0.5);
+        padding:0.35rem 0.85rem;
+        border-radius:6px;
+        cursor:pointer;
+        transition:all 0.15s;
+        border:none;
+        background:none;
+    }}
+    .fs-nav-link:hover{{color:white;background:rgba(255,255,255,0.07);}}
+    .fs-nav-link.active{{
+        color:white;
+        background:rgba(45,127,249,0.22);
+    }}
+    .fs-badge{{
+        background:{COLORS['blue']};
+        color:white;
+        font-size:0.65rem;
+        font-weight:700;
+        padding:0.18rem 0.55rem;
+        border-radius:100px;
+        letter-spacing:0.4px;
+        text-transform:uppercase;
     }}
 
-    /* ── Navigation ── */
-    .fs-nav {{
-        background: rgba(7,11,20,0.85);
-        backdrop-filter: blur(20px);
-        -webkit-backdrop-filter: blur(20px);
-        border-bottom: 1px solid {COLORS['border_glass']};
-        padding: 1rem 2rem;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        margin: -4rem -4rem 2.5rem -4rem;
-        position: sticky;
-        top: 0;
-        z-index: 100;
+    /* ── Page header ── */
+    .fs-page-header{{
+        margin-bottom:1.75rem;
+        padding-bottom:1.25rem;
+        border-bottom:1px solid {COLORS['border']};
     }}
-    .fs-logo {{
-        font-family: 'Syne', sans-serif;
-        font-size: 1.6rem;
-        font-weight: 800;
-        letter-spacing: -1px;
-        background: linear-gradient(135deg, {COLORS['primary']}, {COLORS['gold']});
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        background-clip: text;
+    .fs-page-title{{
+        font-size:1.35rem;
+        font-weight:800;
+        color:{COLORS['navy']};
+        letter-spacing:-0.4px;
+        margin-bottom:0.2rem;
     }}
-    .fs-nav-badge {{
-        font-size: 0.75rem;
-        color: {COLORS['text_muted']};
-        display: flex;
-        align-items: center;
-        gap: 0.4rem;
-    }}
-    .fs-nav-badge::before {{
-        content: '';
-        width: 6px; height: 6px;
-        border-radius: 50%;
-        background: {COLORS['success']};
-        box-shadow: 0 0 6px {COLORS['success']};
-        animation: pulse-dot 2s infinite;
-    }}
-    @keyframes pulse-dot {{
-        0%, 100% {{ opacity: 1; transform: scale(1); }}
-        50% {{ opacity: 0.6; transform: scale(0.8); }}
+    .fs-page-subtitle{{
+        font-size:0.85rem;
+        color:{COLORS['text_secondary']};
     }}
 
-    /* ── Glass Cards ── */
-    .fs-card {{
-        background: {COLORS['bg_glass']};
-        border: 1px solid {COLORS['border_glass']};
-        border-radius: 16px;
-        padding: 1.5rem;
-        margin-bottom: 1rem;
-        backdrop-filter: blur(10px);
-        transition: border-color 0.2s, transform 0.2s;
+    /* ── Cards ── */
+    .fs-card{{
+        background:{COLORS['bg_white']};
+        border:1px solid {COLORS['border']};
+        border-radius:10px;
+        padding:1.5rem;
+        margin-bottom:1rem;
+        transition:box-shadow 0.15s;
     }}
-    .fs-card:hover {{
-        border-color: rgba(0,212,170,0.15);
+    .fs-card:hover{{box-shadow:0 2px 12px rgba(10,31,68,0.07);}}
+
+    /* ── Section label ── */
+    .section-label{{
+        font-size:0.7rem;
+        font-weight:700;
+        color:{COLORS['text_muted']};
+        text-transform:uppercase;
+        letter-spacing:1px;
+        margin-bottom:0.75rem;
+        display:flex;
+        align-items:center;
+        gap:0.5rem;
     }}
-    .fs-card-accent {{
-        border-left: 3px solid {COLORS['primary']};
-        background: linear-gradient(135deg,
-            rgba(0,212,170,0.05) 0%,
-            rgba(0,0,0,0) 100%);
+    .section-label::after{{
+        content:'';
+        flex:1;
+        height:1px;
+        background:{COLORS['border']};
     }}
 
-    /* ── Score Reveal Card (the shareable one) ── */
-    .score-reveal-card {{
-        background: linear-gradient(145deg,
-            #0D1526 0%,
-            #111827 50%,
-            #0A1020 100%);
-        border: 1px solid rgba(255,255,255,0.06);
-        border-radius: 24px;
-        padding: 2.5rem 2rem;
-        text-align: center;
-        position: relative;
-        overflow: hidden;
-        margin: 0 auto;
-        max-width: 480px;
+    /* ── Score panel ── */
+    .score-panel{{
+        background:{COLORS['bg_white']};
+        border:1px solid {COLORS['border']};
+        border-radius:10px;
+        padding:2rem 1.75rem;
+        text-align:center;
+        position:relative;
+        overflow:hidden;
     }}
-    .score-reveal-card::before {{
-        content: '';
-        position: absolute;
-        top: -50%; left: -50%;
-        width: 200%; height: 200%;
-        background: conic-gradient(
-            from 0deg at 50% 50%,
-            transparent 0deg,
-            rgba(0,212,170,0.03) 60deg,
-            transparent 120deg,
-            rgba(245,200,66,0.02) 180deg,
-            transparent 240deg,
-            rgba(0,212,170,0.03) 300deg,
-            transparent 360deg
-        );
-        animation: rotate-bg 20s linear infinite;
-        pointer-events: none;
+    .score-panel::before{{
+        content:'';
+        position:absolute;
+        top:0;left:0;right:0;
+        height:3px;
+        background:linear-gradient(90deg,{COLORS['blue']},{COLORS['teal']});
     }}
-    @keyframes rotate-bg {{
-        from {{ transform: rotate(0deg); }}
-        to {{ transform: rotate(360deg); }}
+    .score-eyebrow{{
+        font-size:0.68rem;
+        font-weight:700;
+        letter-spacing:1.5px;
+        text-transform:uppercase;
+        color:{COLORS['text_muted']};
+        margin-bottom:0.5rem;
     }}
-
-    /* ── Score Number ── */
-    .score-number {{
-        font-family: 'Syne', sans-serif;
-        font-size: 6rem;
-        font-weight: 800;
-        line-height: 1;
-        letter-spacing: -4px;
-        margin: 0.5rem 0;
-        animation: count-up 1.5s cubic-bezier(0.16, 1, 0.3, 1) both;
+    .score-value{{
+        font-family:'JetBrains Mono',monospace;
+        font-size:4.2rem;
+        font-weight:600;
+        letter-spacing:-3px;
+        line-height:1;
+        margin-bottom:0.25rem;
     }}
-    @keyframes count-up {{
-        from {{ opacity: 0; transform: scale(0.5) translateY(20px); }}
-        to {{ opacity: 1; transform: scale(1) translateY(0); }}
+    .score-band-pill{{
+        display:inline-block;
+        padding:0.28rem 0.9rem;
+        border-radius:6px;
+        font-size:0.75rem;
+        font-weight:700;
+        letter-spacing:0.5px;
+        text-transform:uppercase;
+        margin:0.65rem 0;
     }}
-    .score-label {{
-        font-family: 'Space Grotesk', sans-serif;
-        font-size: 0.8rem;
-        font-weight: 600;
-        letter-spacing: 3px;
-        text-transform: uppercase;
-        color: {COLORS['text_muted']};
-        margin-bottom: 0.3rem;
+    .score-track-wrap{{
+        margin:1rem auto 0;
+        max-width:260px;
     }}
-    .score-band-pill {{
-        display: inline-block;
-        padding: 0.4rem 1.4rem;
-        border-radius: 100px;
-        font-size: 0.8rem;
-        font-weight: 700;
-        letter-spacing: 1.5px;
-        text-transform: uppercase;
-        margin: 0.8rem 0;
-        position: relative;
-        z-index: 1;
+    .score-track{{
+        height:4px;
+        border-radius:100px;
+        background:linear-gradient(90deg,
+            {COLORS['poor']} 0%,
+            {COLORS['fair']} 28%,
+            {COLORS['good']} 58%,
+            {COLORS['excellent']} 100%);
+        position:relative;
+        margin-bottom:6px;
     }}
-
-    /* ── Score Bar ── */
-    .score-bar-container {{
-        margin: 1.2rem auto;
-        max-width: 320px;
-        position: relative;
+    .score-marker{{
+        position:absolute;
+        top:50%;
+        width:11px;height:11px;
+        border-radius:50%;
+        background:{COLORS['navy']};
+        border:2px solid white;
+        transform:translate(-50%,-50%);
+        box-shadow:0 1px 4px rgba(0,0,0,0.2);
     }}
-    .score-bar-track {{
-        height: 6px;
-        border-radius: 100px;
-        background: linear-gradient(90deg,
-            #FF4D6A 0%,
-            #F5A623 30%,
-            #10D98A 60%,
-            #00D4AA 100%);
-        position: relative;
-        overflow: visible;
-    }}
-    .score-bar-marker {{
-        position: absolute;
-        top: 50%;
-        width: 14px; height: 14px;
-        border-radius: 50%;
-        background: white;
-        border: 2px solid currentColor;
-        transform: translate(-50%, -50%);
-        box-shadow: 0 0 12px currentColor;
-        transition: left 1.5s cubic-bezier(0.16, 1, 0.3, 1);
-    }}
-    .score-bar-labels {{
-        display: flex;
-        justify-content: space-between;
-        margin-top: 0.5rem;
-        font-size: 0.68rem;
-        color: {COLORS['text_muted']};
-        font-family: 'JetBrains Mono', monospace;
+    .score-track-labels{{
+        display:flex;
+        justify-content:space-between;
+        font-size:0.6rem;
+        color:{COLORS['text_muted']};
+        font-family:'JetBrains Mono',monospace;
     }}
 
-    /* ── KPI Cards ── */
-    .kpi-grid {{
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 0.8rem;
+    /* ── Metric grid ── */
+    .metric-grid{{
+        display:grid;
+        grid-template-columns:repeat(3,1fr);
+        gap:0.9rem;
+        margin-bottom:1.5rem;
     }}
-    .kpi-card {{
-        background: rgba(255,255,255,0.03);
-        border: 1px solid rgba(255,255,255,0.06);
-        border-radius: 14px;
-        padding: 1.1rem 1rem;
-        text-align: center;
-        transition: all 0.2s;
-        animation: fade-up 0.5s ease both;
+    .metric-card{{
+        background:{COLORS['bg_white']};
+        border:1px solid {COLORS['border']};
+        border-radius:10px;
+        padding:1.1rem 1.1rem 0.9rem;
+        transition:box-shadow 0.15s;
     }}
-    .kpi-card:hover {{
-        border-color: rgba(0,212,170,0.2);
-        background: rgba(0,212,170,0.04);
-        transform: translateY(-2px);
+    .metric-card:hover{{box-shadow:0 2px 10px rgba(10,31,68,0.07);}}
+    .metric-label{{
+        font-size:0.68rem;
+        font-weight:700;
+        color:{COLORS['text_muted']};
+        text-transform:uppercase;
+        letter-spacing:0.8px;
+        margin-bottom:0.45rem;
     }}
-    @keyframes fade-up {{
-        from {{ opacity: 0; transform: translateY(16px); }}
-        to {{ opacity: 1; transform: translateY(0); }}
+    .metric-value{{
+        font-family:'JetBrains Mono',monospace;
+        font-size:1.55rem;
+        font-weight:600;
+        color:{COLORS['navy']};
+        letter-spacing:-0.8px;
+        line-height:1;
+        margin-bottom:0.45rem;
     }}
-    .kpi-value {{
-        font-family: 'Syne', sans-serif;
-        font-size: 1.7rem;
-        font-weight: 800;
-        color: {COLORS['text_primary']};
-        line-height: 1.1;
-        letter-spacing: -1px;
+    .metric-badge{{
+        display:inline-flex;
+        align-items:center;
+        font-size:0.7rem;
+        font-weight:600;
+        padding:0.18rem 0.5rem;
+        border-radius:5px;
     }}
-    .kpi-label {{
-        font-size: 0.7rem;
-        color: {COLORS['text_muted']};
-        text-transform: uppercase;
-        letter-spacing: 1.2px;
-        margin-top: 0.25rem;
-        font-weight: 500;
-    }}
-    .kpi-delta {{
-        font-size: 0.75rem;
-        margin-top: 0.3rem;
-        font-weight: 600;
-        padding: 0.15rem 0.5rem;
-        border-radius: 100px;
-        display: inline-block;
-    }}
-    .delta-good {{
-        background: rgba(16,217,138,0.1);
-        color: {COLORS['success']};
-    }}
-    .delta-warn {{
-        background: rgba(245,166,35,0.1);
-        color: {COLORS['warning']};
-    }}
-    .delta-bad {{
-        background: rgba(255,77,106,0.1);
-        color: {COLORS['danger']};
-    }}
-    .delta-neutral {{
-        background: rgba(139,156,200,0.1);
-        color: {COLORS['text_secondary']};
-    }}
+    .b-good{{background:{COLORS['success_light']};color:{COLORS['success']};}}
+    .b-warn{{background:{COLORS['warning_light']};color:{COLORS['warning']};}}
+    .b-bad{{background:{COLORS['danger_light']};color:{COLORS['danger']};}}
+    .b-info{{background:{COLORS['blue_light']};color:{COLORS['blue']};}}
 
-    /* ── Section Headers ── */
-    .section-header {{
-        font-family: 'Syne', sans-serif;
-        font-size: 1rem;
-        font-weight: 700;
-        color: {COLORS['text_primary']};
-        letter-spacing: 0.5px;
-        margin-bottom: 1rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
+    /* ── Insight box ── */
+    .insight-box{{
+        border-radius:8px;
+        padding:0.85rem 1rem;
+        margin-bottom:1.25rem;
+        font-size:0.85rem;
+        line-height:1.7;
+        border-left:3px solid;
     }}
-    .section-header::after {{
-        content: '';
-        flex: 1;
-        height: 1px;
-        background: linear-gradient(90deg,
-            {COLORS['border_glass']}, transparent);
-    }}
+    .insight-good{{background:{COLORS['success_light']};border-color:{COLORS['success']};color:#065f46;}}
+    .insight-warn{{background:{COLORS['warning_light']};border-color:{COLORS['warning']};color:#92400e;}}
+    .insight-bad{{background:{COLORS['danger_light']};border-color:{COLORS['danger']};color:#991b1b;}}
+    .insight-info{{background:{COLORS['blue_light']};border-color:{COLORS['blue']};color:#1e40af;}}
 
-    /* ── Recommendation Cards ── */
-    .rec-card {{
-        background: rgba(255,255,255,0.02);
-        border: 1px solid rgba(255,255,255,0.06);
-        border-radius: 12px;
-        padding: 1rem 1.2rem;
-        margin-bottom: 0.6rem;
-        transition: all 0.2s;
-        animation: slide-in 0.4s ease both;
+    /* ── Recommendation items ── */
+    .rec-item{{
+        background:{COLORS['bg_white']};
+        border:1px solid {COLORS['border']};
+        border-radius:8px;
+        padding:0.9rem 1rem;
+        margin-bottom:0.55rem;
+        transition:all 0.15s;
+        display:flex;
+        gap:0.8rem;
+        align-items:flex-start;
     }}
-    .rec-card:hover {{
-        background: rgba(255,255,255,0.04);
-        border-color: rgba(0,212,170,0.2);
-        transform: translateX(4px);
+    .rec-item:hover{{
+        border-color:{COLORS['blue']};
+        box-shadow:0 0 0 3px {COLORS['blue_light']};
     }}
-    @keyframes slide-in {{
-        from {{ opacity: 0; transform: translateX(-16px); }}
-        to {{ opacity: 1; transform: translateX(0); }}
+    .rec-num{{
+        width:22px;height:22px;min-width:22px;
+        border-radius:6px;
+        background:{COLORS['navy']};
+        color:white;
+        font-size:0.68rem;
+        font-weight:700;
+        display:flex;
+        align-items:center;
+        justify-content:center;
+        margin-top:1px;
     }}
-    .rec-number {{
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        width: 22px; height: 22px;
-        border-radius: 50%;
-        background: linear-gradient(135deg,
-            {COLORS['primary']}, {COLORS['primary_dark']});
-        font-size: 0.7rem;
-        font-weight: 700;
-        color: {COLORS['bg_primary']};
-        margin-right: 0.5rem;
-        flex-shrink: 0;
+    .rec-body{{flex:1;}}
+    .rec-title-row{{
+        font-size:0.85rem;
+        font-weight:700;
+        color:{COLORS['text']};
+        margin-bottom:0.25rem;
+        display:flex;
+        align-items:center;
+        gap:0.45rem;
+        flex-wrap:wrap;
     }}
-    .rec-title {{
-        font-weight: 600;
-        font-size: 0.9rem;
-        color: {COLORS['text_primary']};
-        display: inline;
+    .rec-tag{{
+        font-size:0.6rem;
+        font-weight:700;
+        padding:0.12rem 0.45rem;
+        border-radius:4px;
+        text-transform:uppercase;
+        letter-spacing:0.4px;
     }}
-    .rec-category {{
-        font-size: 0.65rem;
-        font-weight: 700;
-        padding: 0.15rem 0.5rem;
-        border-radius: 100px;
-        margin-left: 0.4rem;
-        text-transform: uppercase;
-        letter-spacing: 0.8px;
-        vertical-align: middle;
+    .tag-debt{{background:#EDE9FE;color:#5B21B6;}}
+    .tag-savings{{background:{COLORS['teal_light']};color:#065f46;}}
+    .tag-income{{background:{COLORS['success_light']};color:{COLORS['success']};}}
+    .tag-behaviour{{background:{COLORS['warning_light']};color:{COLORS['warning']};}}
+    .tag-expenses{{background:{COLORS['danger_light']};color:{COLORS['danger']};}}
+    .rec-desc{{
+        font-size:0.8rem;
+        color:{COLORS['text_secondary']};
+        line-height:1.6;
+        margin-bottom:0.35rem;
     }}
-    .rec-desc {{
-        font-size: 0.82rem;
-        color: {COLORS['text_secondary']};
-        line-height: 1.6;
-        margin-top: 0.5rem;
+    .rec-impact{{
+        font-size:0.72rem;
+        font-weight:600;
+        color:{COLORS['teal']};
+        display:inline-flex;
+        align-items:center;
+        gap:3px;
     }}
-    .rec-impact {{
-        font-size: 0.75rem;
-        font-weight: 600;
-        color: {COLORS['primary']};
-        margin-top: 0.4rem;
-        display: flex;
-        align-items: center;
-        gap: 0.3rem;
-    }}
-    .rec-impact::before {{
-        content: '↑';
-        font-size: 0.8rem;
-    }}
+    .rec-impact::before{{content:'↑';font-weight:700;}}
 
-    /* ── Category color pills ── */
-    .cat-debt      {{ background:rgba(139,92,246,0.15); color:#A78BFA; }}
-    .cat-savings   {{ background:rgba(0,212,170,0.12); color:{COLORS['primary']}; }}
-    .cat-income    {{ background:rgba(16,217,138,0.12); color:{COLORS['success']}; }}
-    .cat-behaviour {{ background:rgba(245,166,35,0.12); color:{COLORS['warning']}; }}
-    .cat-expenses  {{ background:rgba(255,77,106,0.12); color:{COLORS['danger']}; }}
+    /* ── Step indicator ── */
+    .step-row{{
+        display:flex;
+        align-items:center;
+        gap:0.4rem;
+        margin-bottom:1.5rem;
+    }}
+    .step-seg{{
+        height:3px;
+        border-radius:100px;
+        flex:1;
+        background:{COLORS['border']};
+        transition:background 0.25s;
+    }}
+    .step-seg.done{{background:{COLORS['blue']};}}
+    .step-meta{{
+        font-size:0.73rem;
+        color:{COLORS['text_muted']};
+        font-weight:500;
+        margin-bottom:0.4rem;
+    }}
+    .step-meta strong{{color:{COLORS['navy']};}}
 
-    /* ── Progress Bar (form) ── */
-    .step-indicator {{
-        display: flex;
-        gap: 0.4rem;
-        margin-bottom: 1.5rem;
+    /* ── Form inputs ── */
+    .stNumberInput label,.stSelectbox label,
+    .stSlider label,.stRadio label,.stTextInput label{{
+        font-size:0.8rem!important;
+        font-weight:600!important;
+        color:{COLORS['text_secondary']}!important;
+        font-family:'Plus Jakarta Sans',sans-serif!important;
     }}
-    .step-dot {{
-        height: 3px;
-        border-radius: 100px;
-        flex: 1;
-        background: rgba(255,255,255,0.1);
-        transition: background 0.3s;
+    .stTextInput input,.stNumberInput input{{
+        background:{COLORS['bg_white']}!important;
+        border:1.5px solid {COLORS['border_strong']}!important;
+        border-radius:7px!important;
+        color:{COLORS['text']}!important;
+        font-family:'JetBrains Mono',monospace!important;
+        font-size:0.88rem!important;
+        transition:border-color 0.15s,box-shadow 0.15s!important;
     }}
-    .step-dot.active {{
-        background: linear-gradient(90deg,
-            {COLORS['primary']}, {COLORS['gold']});
+    .stTextInput input:focus,.stNumberInput input:focus{{
+        border-color:{COLORS['blue']}!important;
+        box-shadow:0 0 0 3px rgba(45,127,249,0.1)!important;
     }}
-    .step-text {{
-        font-size: 0.75rem;
-        color: {COLORS['text_muted']};
-        margin-bottom: 0.5rem;
-        font-weight: 500;
-        letter-spacing: 0.5px;
-    }}
-
-    /* ── Form Labels ── */
-    .stNumberInput label,
-    .stSelectbox label,
-    .stSlider label,
-    .stRadio label {{
-        color: {COLORS['text_secondary']} !important;
-        font-size: 0.85rem !important;
-        font-weight: 500 !important;
-        font-family: 'Space Grotesk', sans-serif !important;
-    }}
-
-    /* ── Form Inputs ── */
-    .stTextInput input,
-    .stNumberInput input {{
-        background: rgba(255,255,255,0.04) !important;
-        border: 1px solid rgba(255,255,255,0.08) !important;
-        border-radius: 10px !important;
-        color: {COLORS['text_primary']} !important;
-        font-family: 'Space Grotesk', sans-serif !important;
-    }}
-    .stTextInput input:focus,
-    .stNumberInput input:focus {{
-        border-color: rgba(0,212,170,0.4) !important;
-        box-shadow: 0 0 0 3px rgba(0,212,170,0.08) !important;
-    }}
-
-    /* ── Selectbox ── */
-    .stSelectbox > div > div {{
-        background: rgba(255,255,255,0.04) !important;
-        border: 1px solid rgba(255,255,255,0.08) !important;
-        border-radius: 10px !important;
-        color: {COLORS['text_primary']} !important;
+    .stSelectbox>div>div{{
+        background:{COLORS['bg_white']}!important;
+        border:1.5px solid {COLORS['border_strong']}!important;
+        border-radius:7px!important;
+        color:{COLORS['text']}!important;
     }}
 
     /* ── Buttons ── */
-    .stButton > button {{
-        background: linear-gradient(135deg,
-            {COLORS['primary']}, {COLORS['primary_dark']}) !important;
-        color: {COLORS['bg_primary']} !important;
-        border: none !important;
-        border-radius: 10px !important;
-        padding: 0.65rem 2rem !important;
-        font-weight: 700 !important;
-        font-size: 0.9rem !important;
-        font-family: 'Space Grotesk', sans-serif !important;
-        letter-spacing: 0.3px !important;
-        transition: all 0.2s !important;
-        width: 100% !important;
+    .stButton>button{{
+        background:{COLORS['blue']}!important;
+        color:white!important;
+        border:none!important;
+        border-radius:7px!important;
+        padding:0.55rem 1.4rem!important;
+        font-weight:600!important;
+        font-size:0.875rem!important;
+        font-family:'Plus Jakarta Sans',sans-serif!important;
+        transition:all 0.15s!important;
+        width:100%!important;
     }}
-    .stButton > button:hover {{
-        transform: translateY(-2px) !important;
-        box-shadow: 0 8px 25px rgba(0,212,170,0.3) !important;
-        opacity: 0.95 !important;
+    .stButton>button:hover{{
+        background:{COLORS['blue_hover']}!important;
+        box-shadow:0 4px 12px rgba(45,127,249,0.28)!important;
+        transform:translateY(-1px)!important;
     }}
-    .stButton > button:active {{
-        transform: translateY(0) !important;
+    .stButton>button:active{{transform:translateY(0)!important;box-shadow:none!important;}}
+    .btn-secondary>button{{
+        background:transparent!important;
+        color:{COLORS['text_secondary']}!important;
+        border:1.5px solid {COLORS['border_strong']}!important;
+        box-shadow:none!important;
     }}
-    .btn-ghost > button {{
-        background: transparent !important;
-        border: 1px solid rgba(255,255,255,0.12) !important;
-        color: {COLORS['text_secondary']} !important;
-        box-shadow: none !important;
+    .btn-secondary>button:hover{{
+        border-color:{COLORS['blue']}!important;
+        color:{COLORS['blue']}!important;
+        background:{COLORS['blue_light']}!important;
+        box-shadow:none!important;
+        transform:none!important;
     }}
-    .btn-ghost > button:hover {{
-        border-color: rgba(0,212,170,0.3) !important;
-        color: {COLORS['primary']} !important;
-        box-shadow: none !important;
+    .btn-teal>button{{
+        background:{COLORS['teal']}!important;
+        color:white!important;
     }}
-    .btn-gold > button {{
-        background: linear-gradient(135deg,
-            {COLORS['gold']}, {COLORS['warning']}) !important;
-        color: #1A1200 !important;
-    }}
-    .btn-gold > button:hover {{
-        box-shadow: 0 8px 25px rgba(245,200,66,0.3) !important;
+    .btn-teal>button:hover{{
+        background:#00A892!important;
+        box-shadow:0 4px 12px rgba(0,194,168,0.28)!important;
     }}
 
-    /* ── Trust badge ── */
-    .trust-badge {{
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        background: rgba(16,217,138,0.06);
-        border: 1px solid rgba(16,217,138,0.15);
-        border-radius: 8px;
-        padding: 0.6rem 1rem;
-        font-size: 0.78rem;
-        color: rgba(16,217,138,0.8);
-        margin-bottom: 1.5rem;
+    /* ── Trust note ── */
+    .trust-note{{
+        display:flex;
+        align-items:center;
+        gap:0.5rem;
+        font-size:0.77rem;
+        color:{COLORS['success']};
+        background:{COLORS['success_light']};
+        border:1px solid #A7F3D0;
+        border-radius:7px;
+        padding:0.5rem 0.85rem;
+        margin-bottom:1.5rem;
+        font-weight:500;
     }}
 
-    /* ── Narrative box ── */
-    .narrative-box {{
-        border-radius: 12px;
-        padding: 1rem 1.3rem;
-        margin-bottom: 1.2rem;
-        border-left: 3px solid;
-        font-size: 0.9rem;
-        line-height: 1.7;
-        animation: fade-up 0.4s ease both;
+    /* ── Form section ── */
+    .form-section{{
+        font-size:0.7rem;
+        font-weight:700;
+        text-transform:uppercase;
+        letter-spacing:1px;
+        color:{COLORS['blue']};
+        margin:1.25rem 0 0.75rem;
+        padding-bottom:0.45rem;
+        border-bottom:1px solid {COLORS['blue_mid']};
     }}
 
-    /* ── Form section title ── */
-    .form-section {{
-        font-family: 'Syne', sans-serif;
-        font-size: 0.85rem;
-        font-weight: 700;
-        color: {COLORS['primary']};
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        margin-bottom: 1rem;
-        padding-bottom: 0.5rem;
-        border-bottom: 1px solid rgba(0,212,170,0.15);
+    /* ── Balance widget ── */
+    .balance-widget{{
+        background:{COLORS['bg']};
+        border:1px solid {COLORS['border']};
+        border-radius:8px;
+        padding:0.9rem 1.1rem;
+        margin-top:0.9rem;
+        display:flex;
+        justify-content:space-between;
+        align-items:center;
+    }}
+    .bal-label{{
+        font-size:0.66rem;
+        font-weight:600;
+        text-transform:uppercase;
+        letter-spacing:0.8px;
+        color:{COLORS['text_muted']};
+        margin-bottom:0.2rem;
+    }}
+    .bal-value{{
+        font-family:'JetBrains Mono',monospace;
+        font-size:1.15rem;
+        font-weight:600;
+        color:{COLORS['navy']};
+        letter-spacing:-0.5px;
     }}
 
-    /* ── Live balance tracker ── */
-    .balance-tracker {{
-        background: linear-gradient(135deg,
-            rgba(0,212,170,0.06), rgba(0,0,0,0));
-        border: 1px solid rgba(0,212,170,0.12);
-        border-radius: 12px;
-        padding: 1rem 1.3rem;
-        margin-top: 1rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
+    /* ── Divider ── */
+    .fs-divider{{height:1px;background:{COLORS['border']};margin:1.75rem 0;}}
+
+    /* ── Tabs ── */
+    .stTabs [data-baseweb="tab-list"]{{
+        background:{COLORS['bg']}!important;
+        border-radius:8px!important;
+        padding:3px!important;
+        gap:2px!important;
+        border:1px solid {COLORS['border']}!important;
+    }}
+    .stTabs [data-baseweb="tab"]{{
+        background:transparent!important;
+        color:{COLORS['text_muted']}!important;
+        border-radius:6px!important;
+        font-family:'Plus Jakarta Sans',sans-serif!important;
+        font-size:0.8rem!important;
+        font-weight:600!important;
+    }}
+    .stTabs [aria-selected="true"]{{
+        background:{COLORS['bg_white']}!important;
+        color:{COLORS['navy']}!important;
+        box-shadow:0 1px 3px rgba(0,0,0,0.08)!important;
     }}
 
     /* ── Scrollbar ── */
-    ::-webkit-scrollbar {{ width: 4px; }}
-    ::-webkit-scrollbar-track {{
-        background: {COLORS['bg_primary']}; }}
-    ::-webkit-scrollbar-thumb {{
-        background: rgba(0,212,170,0.2);
-        border-radius: 2px; }}
+    ::-webkit-scrollbar{{width:5px;}}
+    ::-webkit-scrollbar-track{{background:{COLORS['bg']};}}
+    ::-webkit-scrollbar-thumb{{background:{COLORS['border_strong']};border-radius:3px;}}
 
-    /* ── Plotly chart bg ── */
-    .js-plotly-plot .plotly {{
-        background: transparent !important; }}
-    .js-plotly-plot .plotly .main-svg {{
-        background: transparent !important; }}
+    /* ── Plotly bg ── */
+    .js-plotly-plot .plotly,
+    .js-plotly-plot .plotly .main-svg{{background:transparent!important;}}
 
-    /* ── Stagger animation delays ── */
-    .kpi-card:nth-child(1) {{ animation-delay: 0.05s; }}
-    .kpi-card:nth-child(2) {{ animation-delay: 0.10s; }}
-    .kpi-card:nth-child(3) {{ animation-delay: 0.15s; }}
-    .kpi-card:nth-child(4) {{ animation-delay: 0.20s; }}
-    .kpi-card:nth-child(5) {{ animation-delay: 0.25s; }}
-    .kpi-card:nth-child(6) {{ animation-delay: 0.30s; }}
-    .rec-card:nth-child(1) {{ animation-delay: 0.1s; }}
-    .rec-card:nth-child(2) {{ animation-delay: 0.2s; }}
-    .rec-card:nth-child(3) {{ animation-delay: 0.3s; }}
-    .rec-card:nth-child(4) {{ animation-delay: 0.4s; }}
-    .rec-card:nth-child(5) {{ animation-delay: 0.5s; }}
-
-    /* ── Loading spinner ── */
-    .stSpinner > div {{
-        border-color: {COLORS['primary']} transparent transparent !important;
+    /* ── Share tip ── */
+    .share-tip{{
+        text-align:center;
+        font-size:0.77rem;
+        color:{COLORS['text_muted']};
+        padding:0.7rem;
+        border:1px dashed {COLORS['border_strong']};
+        border-radius:8px;
+        margin-top:1.5rem;
     }}
-
-    /* ── Tabs ── */
-    .stTabs [data-baseweb="tab-list"] {{
-        background: rgba(255,255,255,0.03) !important;
-        border-radius: 10px !important;
-        padding: 3px !important;
-        gap: 2px !important;
-    }}
-    .stTabs [data-baseweb="tab"] {{
-        background: transparent !important;
-        color: {COLORS['text_muted']} !important;
-        border-radius: 8px !important;
-        font-family: 'Space Grotesk', sans-serif !important;
-        font-weight: 500 !important;
-    }}
-    .stTabs [aria-selected="true"] {{
-        background: rgba(0,212,170,0.1) !important;
-        color: {COLORS['primary']} !important;
-    }}
-
-    /* ── Dataframe ── */
-    .stDataFrame {{
-        background: rgba(255,255,255,0.02) !important;
-        border-radius: 10px !important;
-    }}
-
-    /* ── Info/warning boxes ── */
-    .stAlert {{
-        background: rgba(255,255,255,0.03) !important;
-        border: 1px solid rgba(255,255,255,0.08) !important;
-        border-radius: 10px !important;
-        color: {COLORS['text_secondary']} !important;
-    }}
+    .share-tip strong{{color:{COLORS['blue']};}}
     </style>
     """, unsafe_allow_html=True)
 
 
-def nav_bar(show_score: bool = False, score: int = None,
-            band: str = None):
-    score_html = ""
-    if show_score and score:
-        color = SCORE_COLORS.get(band, COLORS['primary'])
-        score_html = f"""
-        <div style="display:flex; align-items:center; gap:0.6rem;">
-            <span style="font-size:0.75rem;
-                         color:{COLORS['text_muted']};">Your score</span>
-            <span style="font-family:'Syne',sans-serif;
-                         font-weight:800; font-size:1.1rem;
+def nav_bar(active_page: str = "score",
+            score: int = None, band: str = None):
+    pages = [
+        ("score",    "Credit Score"),
+        ("loans",    "Loan Simulator"),
+        ("advisor",  "AI Advisor"),
+    ]
+    links = ""
+    for key, label in pages:
+        cls = "active" if key == active_page else ""
+        links += f'<span class="fs-nav-link {cls}">{label}</span>'
+
+    right_html = ""
+    if score and band:
+        color = SCORE_COLORS.get(band, COLORS["blue"])
+        right_html = f"""
+        <div style="display:flex;align-items:center;gap:0.5rem;">
+            <span style="font-size:0.68rem;color:rgba(255,255,255,0.4);
+                         font-weight:600;letter-spacing:0.8px;">SCORE</span>
+            <span style="font-family:'JetBrains Mono',monospace;
+                         font-weight:600;font-size:0.98rem;
                          color:{color};">{score}</span>
-            <span style="font-size:0.72rem; font-weight:600;
-                         color:{color}; background:rgba(0,0,0,0.3);
-                         padding:0.15rem 0.5rem;
-                         border-radius:100px;">{band}</span>
-        </div>
-        """
+            <span class="fs-badge">{band}</span>
+        </div>"""
 
     st.markdown(f"""
-    <div class="fs-nav">
-        <div class="fs-logo">FinSight</div>
-        {score_html if score_html else
-         '<div class="fs-nav-badge">Secured · Private · Free</div>'}
+    <div class="fs-topbar">
+        <div class="fs-logo">
+            <div class="fs-logo-dot"></div>
+            FinSight
+        </div>
+        <div class="fs-nav-center">{links}</div>
+        <div>{right_html}</div>
+    </div>
+    """, unsafe_allow_html=True)
+
+
+def page_header(title: str, subtitle: str = ""):
+    sub = (f'<div class="fs-page-subtitle">{subtitle}</div>'
+           if subtitle else "")
+    st.markdown(f"""
+    <div class="fs-page-header">
+        <div class="fs-page-title">{title}</div>
+        {sub}
     </div>
     """, unsafe_allow_html=True)

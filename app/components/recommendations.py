@@ -4,29 +4,30 @@ from app.styles.theme import COLORS
 
 
 def render_recommendations(recommendations: list[Recommendation]):
-    st.markdown("""
-    <div style="font-size:0.8rem; color:#4A5578;
-                margin-bottom:0.8rem; line-height:1.6;">
-        Address in order — Priority 1 has the biggest score impact.
+    st.markdown(f"""
+    <div style="font-size:0.78rem;color:{COLORS['text_muted']};
+                margin-bottom:0.9rem;line-height:1.6;">
+        Ranked by impact — address Priority 1 first for the
+        fastest score improvement.
     </div>
     """, unsafe_allow_html=True)
 
-    cards_html = ""
+    html = ""
     for rec in recommendations:
-        cat_class = f"cat-{rec.category}"
-        cards_html += f"""
-        <div class="rec-card">
-            <div style="display:flex; align-items:center;
-                        margin-bottom:0.4rem;">
-                <span class="rec-number">{rec.priority}</span>
-                <span class="rec-title">{rec.title}</span>
-                <span class="rec-category {cat_class}">
-                    {rec.category.upper()}
-                </span>
+        tag_class = f"tag-{rec.category}"
+        html += f"""
+        <div class="rec-item">
+            <div class="rec-num">{rec.priority}</div>
+            <div class="rec-body">
+                <div class="rec-title-row">
+                    {rec.title}
+                    <span class="rec-tag {tag_class}">
+                        {rec.category}
+                    </span>
+                </div>
+                <div class="rec-desc">{rec.description}</div>
+                <div class="rec-impact">{rec.impact_estimate}</div>
             </div>
-            <div class="rec-desc">{rec.description}</div>
-            <div class="rec-impact">{rec.impact_estimate}</div>
         </div>
         """
-
-    st.markdown(cards_html, unsafe_allow_html=True)
+    st.markdown(html, unsafe_allow_html=True)

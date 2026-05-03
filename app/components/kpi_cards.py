@@ -9,74 +9,49 @@ def render_kpi_cards(kpis: FinancialKPIs):
     flow = kpis.net_cash_flow
     exp  = kpis.expense_ratio
 
-    def delta_class(val, good_threshold, warn_threshold, reverse=False):
-        if not reverse:
-            if val <= good_threshold: return "delta-good", "Healthy"
-            if val <= warn_threshold: return "delta-warn", "Moderate"
-            return "delta-bad", "High Risk"
-        else:
-            if val >= good_threshold: return "delta-good", "Strong"
-            if val >= warn_threshold: return "delta-warn", "Low"
-            return "delta-bad", "None"
+    def _badge(cls, label):
+        return (f'<div class="metric-badge {cls}">{label}</div>')
 
-    dti_cls, dti_lbl  = delta_class(dti, 35, 50)
-    sr_cls,  sr_lbl   = delta_class(sr,  10,  3, reverse=True)
-    exp_cls, exp_lbl  = delta_class(exp, 70, 90)
+    dti_badge  = (_badge("b-good",  "Healthy")  if dti  < 35 else
+                  _badge("b-warn",  "Moderate") if dti  < 50 else
+                  _badge("b-bad",   "High Risk"))
+    sr_badge   = (_badge("b-good",  "Strong")   if sr   >= 10 else
+                  _badge("b-warn",  "Low")       if sr   >= 3  else
+                  _badge("b-bad",   "None"))
+    flow_badge = (_badge("b-good",  "Surplus")  if flow >= 0  else
+                  _badge("b-bad",   "Deficit ⚠"))
+    exp_badge  = (_badge("b-good",  "Healthy")  if exp  < 70  else
+                  _badge("b-warn",  "Elevated") if exp  < 90  else
+                  _badge("b-bad",   "High"))
 
-    flow_cls   = "delta-good" if flow >= 0 else "delta-bad"
-    flow_lbl   = "Surplus" if flow >= 0 else "Deficit ⚠"
-    flow_prefix= "+" if flow >= 0 else ""
+    flow_sign = "+" if flow >= 0 else ""
+    flow_color = COLORS["good"] if flow >= 0 else COLORS["danger"]
 
     cards = [
-        {
-            "value": f"{dti:.1f}%",
-            "label": "Debt-to-Income",
-            "delta_cls": dti_cls,
-            "delta_lbl": dti_lbl,
-        },
-        {
-            "value": f"{sr:.1f}%",
-            "label": "Savings Rate",
-            "delta_cls": sr_cls,
-            "delta_lbl": sr_lbl,
-        },
-        {
-            "value": f"M{flow_prefix}{flow:,.0f}",
-            "label": "Monthly Cash Flow",
-            "delta_cls": flow_cls,
-            "delta_lbl": flow_lbl,
-        },
-        {
-            "value": f"{exp:.1f}%",
-            "label": "Expense Ratio",
-            "delta_cls": exp_cls,
-            "delta_lbl": exp_lbl,
-        },
-        {
-            "value": f"M{kpis.monthly_income:,.0f}",
-            "label": "Monthly Income",
-            "delta_cls": "delta-neutral",
-            "delta_lbl": "Reported",
-        },
-        {
-            "value": f"M{kpis.total_expenses:,.0f}",
-            "label": "Total Expenses",
-            "delta_cls": exp_cls,
-            "delta_lbl": "Per Month",
-        },
+        ("DEBT-TO-INCOME",
+         f"{dti:.1f}%",         COLORS["navy"], dti_badge),
+        ("SAVINGS RATE",
+         f"{sr:.1f}%",          COLORS["navy"], sr_badge),
+        (f"MONTHLY CASH FLOW",
+         f"M{flow_sign}{flow:,.0f}", flow_color, flow_badge),
+        ("EXPENSE RATIO",
+         f"{exp:.1f}%",         COLORS["navy"], exp_badge),
+        ("MONTHLY INCOME",
+         f"M{kpis.monthly_income:,.0f}", COLORS["navy"],
+         _badge("b-info", "Reported")),
+        ("TOTAL EXPENSES",
+         f"M{kpis.total_expenses:,.0f}", COLORS["navy"],
+         exp_badge),
     ]
 
-    # Render as 3-column grid via HTML
-    cards_html = '<div class="kpi-grid">'
-    for card in cards:
-        cards_html += f"""
-        <div class="kpi-card">
-            <div class="kpi-value">{card['value']}</div>
-            <div class="kpi-label">{card['label']}</div>
-            <div class="kpi-delta {card['delta_cls']}">
-                {card['delta_lbl']}
-            </div>
-        </div>
-        """
-    cards_html += '</div>'
-    st.markdown(cards_html, unsafe_allow_html=True)
+    html = '<div class="metric-grid">'
+    for label, value, color, badge in cards:
+        html += f"""
+        <div class="metric-card">
+            <div class="metric-label">{label}</div>
+            <div class="metric-value"
+                 style="color:{color};">{value}</div>
+            {badge}
+        </div>"""
+    html += '</div>'
+    st.markdown(html, unsafe_allow_html=True)

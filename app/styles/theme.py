@@ -37,6 +37,8 @@ COLORS = {
     "fair": "#D97706",
     "good": "#059669",
     "excellent": "#00C2A8",
+    "primary": "#2D7FF9",
+    "accent": "#00C2A8",
 }
 
 SCORE_COLORS = {

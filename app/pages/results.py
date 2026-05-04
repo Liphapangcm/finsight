@@ -11,6 +11,7 @@ FinSight Results Page — All bugs fixed:
 
 import re
 import streamlit as st
+from streamlit import components
 from app.styles.theme import COLORS, SCORE_COLORS
 from app.components.shap_chart import render_shap_chart
 from app.components.kpi_cards import render_kpi_cards
@@ -79,8 +80,7 @@ def render_results():
     col_score, col_detail = st.columns([1, 1.8])
 
     with col_score:
-        st.markdown(
-            f"""
+        score_html = f"""
         <div class="score-panel">
             <div class="score-eyebrow">Credit Score</div>
 
@@ -156,9 +156,8 @@ def render_results():
                 ID&nbsp;{result.assessment_id[:8]}
             </div>
         </div>
-        """,
-            unsafe_allow_html=True,
-        )
+        """
+        components.v1.html(score_html, height=380)
 
     with col_detail:
         # Narrative with proper HTML bold

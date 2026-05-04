@@ -12,9 +12,15 @@ from app.styles.theme import COLORS
 
 
 def render_shap_chart(feature_names: list, shap_values: list, n: int = 10):
-    # Pair and sort by absolute impact
+    # Pair and sort by absolute impact; filter out near-zero impacts
+    # to avoid misleading negative bars for zero debt / strong financial state
+    pairs = [
+        (name, val)
+        for name, val in zip(feature_names, shap_values)
+        if abs(val) > 0.1  # threshold: ignore impacts < 0.1 points
+    ]
     pairs = sorted(
-        zip(feature_names, shap_values),
+        pairs,
         key=lambda x: abs(x[1]),
         reverse=True,
     )[:n]

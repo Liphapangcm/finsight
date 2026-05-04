@@ -13,8 +13,7 @@ from core.recommender import generate_recommendations
 from config import config
 
 
-def run_assessment(inp: AssessmentInput) -> tuple[ScoreResult | None,
-                                                   list[str]]:
+def run_assessment(inp: AssessmentInput) -> tuple[ScoreResult | None, list[str]]:
     """
     Main entry point for the scoring pipeline.
 
@@ -35,40 +34,40 @@ def run_assessment(inp: AssessmentInput) -> tuple[ScoreResult | None,
     pred = predict(inp)
 
     # ── Step 3: Generate SHAP explanation ────────────────────────
-    explanation = explain(pred['feature_df'])
+    explanation = explain(pred["feature_df"])
 
     # ── Step 4: Generate recommendations ─────────────────────────
     recommendations = generate_recommendations(
-        inp         = inp,
-        explanation = explanation,
-        credit_score= pred['credit_score'],
-        kpis        = pred['kpis'],
+        inp=inp,
+        explanation=explanation,
+        credit_score=pred["credit_score"],
+        kpis=pred["kpis"],
     )
 
     # ── Step 5: Assemble KPIs ─────────────────────────────────────
-    k = pred['kpis']
+    k = pred["kpis"]
     kpis = FinancialKPIs(
-        monthly_income      = k['monthly_income'],
-        total_expenses      = k['total_expenses'],
-        net_cash_flow       = k['net_cash_flow'],
-        debt_to_income      = k['debt_to_income'],
-        savings_rate        = k['savings_rate'],
-        expense_ratio       = k['expense_ratio'],
-        affordability_index = k['affordability_index'],
-        is_in_deficit       = k['is_in_deficit'],
+        monthly_income=k["monthly_income"],
+        total_expenses=k["total_expenses"],
+        net_cash_flow=k["net_cash_flow"],
+        debt_to_income=k["debt_to_income"],
+        savings_rate=k["savings_rate"],
+        expense_ratio=k["expense_ratio"],
+        affordability_index=k["affordability_index"],
+        is_in_deficit=k["is_in_deficit"],
     )
 
     # ── Step 6: Assemble final result ─────────────────────────────
     result = ScoreResult(
-        credit_score     = pred['credit_score'],
-        score_band       = pred['score_band'],
-        risk_level       = pred['risk_level'],
-        score_color      = pred['score_color'],
-        shap_explanation = explanation,
-        kpis             = kpis,
-        recommendations  = recommendations,
-        model_version    = config.MODEL_VERSION,
-        assessment_id    = str(uuid.uuid4()),
+        credit_score=pred["credit_score"],
+        score_band=pred["score_band"],
+        risk_level=pred["risk_level"],
+        score_color=pred["score_color"],
+        shap_explanation=explanation,
+        kpis=kpis,
+        recommendations=recommendations,
+        model_version=config.MODEL_VERSION,
+        assessment_id=str(uuid.uuid4()),
     )
 
     # ── Step 7: Persist to database ───────────────────────────────

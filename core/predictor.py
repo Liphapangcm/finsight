@@ -15,15 +15,14 @@ from core.schemas import AssessmentInput
 
 # Add to core/predictor.py — replace the _load_artifacts function
 
+
 @lru_cache(maxsize=1)
 def _load_artifacts():
     """
     Loads model artifacts with clear error messages if files are missing.
     """
     missing = []
-    for path in [config.MODEL_PATH,
-                 config.PREPROCESSOR_PATH,
-                 config.EXPLAINER_PATH]:
+    for path in [config.MODEL_PATH, config.PREPROCESSOR_PATH, config.EXPLAINER_PATH]:
         if not Path(path).exists():
             missing.append(path)
 
@@ -42,7 +41,9 @@ def _load_artifacts():
 
     return model, scaler, explainer
 
+
 # ── Score band helper ─────────────────────────────────────────────────────────
+
 
 def get_score_band(score: int) -> tuple[str, str, str]:
     """Returns (band_label, risk_level, hex_color) for a given score."""
@@ -53,6 +54,7 @@ def get_score_band(score: int) -> tuple[str, str, str]:
 
 
 # ── Main prediction function ──────────────────────────────────────────────────
+
 
 def predict(inp: AssessmentInput) -> dict:
     """
@@ -72,21 +74,21 @@ def predict(inp: AssessmentInput) -> dict:
     """
     model, scaler, _ = _load_artifacts()
 
-    raw        = inp.to_dict()
+    raw = inp.to_dict()
     feature_df = engineer_features(raw)
     scaled_arr = scaler.transform(feature_df)
 
-    raw_score    = float(model.predict(scaled_arr)[0])
+    raw_score = float(model.predict(scaled_arr)[0])
     credit_score = int(np.clip(round(raw_score), 300, 850))
     band, risk, color = get_score_band(credit_score)
-    kpis         = compute_kpis(raw)
+    kpis = compute_kpis(raw)
 
     return {
-        'credit_score': credit_score,
-        'score_band':   band,
-        'risk_level':   risk,
-        'score_color':  color,
-        'kpis':         kpis,
-        'feature_df':   feature_df,
-        'scaled_arr':   scaled_arr,
+        "credit_score": credit_score,
+        "score_band": band,
+        "risk_level": risk,
+        "score_color": color,
+        "kpis": kpis,
+        "feature_df": feature_df,
+        "scaled_arr": scaled_arr,
     }

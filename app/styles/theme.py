@@ -4,58 +4,61 @@ FinSight Professional Theme — Fixed & Enhanced
 Fixes: asterisks in markdown, mobile layout, button animations,
        score counter animation, premium micro-interactions.
 """
+
 import streamlit as st
+from typing import Optional
 
 COLORS = {
-    "navy":           "#0A1F44",
-    "navy_mid":       "#112553",
-    "navy_light":     "#1A3260",
-    "blue":           "#2D7FF9",
-    "blue_hover":     "#1A6FE8",
-    "blue_light":     "#EBF3FF",
-    "blue_mid":       "#DBEAFE",
-    "teal":           "#00C2A8",
-    "teal_light":     "#E6FAF8",
-    "bg":             "#F5F7FA",
-    "bg_white":       "#FFFFFF",
-    "bg_subtle":      "#F0F2F6",
-    "text":           "#1A1A1A",
+    "navy": "#0A1F44",
+    "navy_mid": "#112553",
+    "navy_light": "#1A3260",
+    "blue": "#2D7FF9",
+    "blue_hover": "#1A6FE8",
+    "blue_light": "#EBF3FF",
+    "blue_mid": "#DBEAFE",
+    "teal": "#00C2A8",
+    "teal_light": "#E6FAF8",
+    "bg": "#F5F7FA",
+    "bg_white": "#FFFFFF",
+    "bg_subtle": "#F0F2F6",
+    "text": "#1A1A1A",
     "text_secondary": "#4B5563",
-    "text_muted":     "#9CA3AF",
-    "text_inverse":   "#FFFFFF",
-    "border":         "#E5E7EB",
-    "border_strong":  "#D1D5DB",
-    "success":        "#059669",
-    "success_light":  "#ECFDF5",
-    "warning":        "#D97706",
-    "warning_light":  "#FFFBEB",
-    "danger":         "#DC2626",
-    "danger_light":   "#FEF2F2",
-    "poor":           "#DC2626",
-    "fair":           "#D97706",
-    "good":           "#059669",
-    "excellent":      "#00C2A8",
+    "text_muted": "#9CA3AF",
+    "text_inverse": "#FFFFFF",
+    "border": "#E5E7EB",
+    "border_strong": "#D1D5DB",
+    "success": "#059669",
+    "success_light": "#ECFDF5",
+    "warning": "#D97706",
+    "warning_light": "#FFFBEB",
+    "danger": "#DC2626",
+    "danger_light": "#FEF2F2",
+    "poor": "#DC2626",
+    "fair": "#D97706",
+    "good": "#059669",
+    "excellent": "#00C2A8",
 }
 
 SCORE_COLORS = {
-    "Poor":      COLORS["poor"],
-    "Fair":      COLORS["fair"],
-    "Good":      COLORS["good"],
+    "Poor": COLORS["poor"],
+    "Fair": COLORS["fair"],
+    "Good": COLORS["good"],
     "Excellent": COLORS["excellent"],
 }
 
 
 def apply_theme():
-    st.markdown(f"""
+    st.markdown(
+        f"""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
     *,*::before,*::after{{box-sizing:border-box;margin:0;padding:0;}}
 
     .stApp{{
-        background:{COLORS['bg']};
+        background:{COLORS["bg"]};
         font-family:'Plus Jakarta Sans',sans-serif;
-        color:{COLORS['text']};
+        color:{COLORS["text"]};
     }}
     #MainMenu,footer,header{{visibility:hidden;}}
     .stDeployButton{{display:none;}}
@@ -71,7 +74,7 @@ def apply_theme():
 
     /* ── Topbar ── */
     .fs-topbar{{
-        background:{COLORS['navy']};
+        background:{COLORS["navy"]};
         padding:0 1.5rem;
         height:54px;
         display:flex;
@@ -81,7 +84,7 @@ def apply_theme():
         position:sticky;
         top:0;
         z-index:999;
-        border-bottom:1px solid {COLORS['navy_mid']};
+        border-bottom:1px solid {COLORS["navy_mid"]};
     }}
     .fs-logo{{
         font-weight:800;
@@ -95,7 +98,7 @@ def apply_theme():
     }}
     .fs-logo-dot{{
         width:7px;height:7px;border-radius:50%;
-        background:{COLORS['blue']};
+        background:{COLORS["blue"]};
         flex-shrink:0;
     }}
     .fs-nav-center{{
@@ -114,7 +117,7 @@ def apply_theme():
         color:white;background:rgba(45,127,249,0.22);
     }}
     .fs-badge{{
-        background:{COLORS['blue']};color:white;
+        background:{COLORS["blue"]};color:white;
         font-size:0.65rem;font-weight:700;
         padding:0.18rem 0.55rem;border-radius:100px;
         letter-spacing:0.4px;text-transform:uppercase;
@@ -123,18 +126,18 @@ def apply_theme():
     /* ── Page header ── */
     .fs-page-header{{
         margin-bottom:1.75rem;padding-bottom:1.25rem;
-        border-bottom:1px solid {COLORS['border']};
+        border-bottom:1px solid {COLORS["border"]};
     }}
     .fs-page-title{{
         font-size:1.35rem;font-weight:800;
-        color:{COLORS['navy']};letter-spacing:-0.4px;margin-bottom:0.2rem;
+        color:{COLORS["navy"]};letter-spacing:-0.4px;margin-bottom:0.2rem;
     }}
-    .fs-page-subtitle{{font-size:0.85rem;color:{COLORS['text_secondary']};}}
+    .fs-page-subtitle{{font-size:0.85rem;color:{COLORS["text_secondary"]};}}
 
     /* ── Cards ── */
     .fs-card{{
-        background:{COLORS['bg_white']};
-        border:1px solid {COLORS['border']};
+        background:{COLORS["bg_white"]};
+        border:1px solid {COLORS["border"]};
         border-radius:10px;padding:1.5rem;margin-bottom:1rem;
         transition:box-shadow 0.2s,transform 0.2s;
     }}
@@ -142,18 +145,18 @@ def apply_theme():
 
     /* ── Section label ── */
     .section-label{{
-        font-size:0.7rem;font-weight:700;color:{COLORS['text_muted']};
+        font-size:0.7rem;font-weight:700;color:{COLORS["text_muted"]};
         text-transform:uppercase;letter-spacing:1px;
         margin-bottom:0.75rem;display:flex;align-items:center;gap:0.5rem;
     }}
     .section-label::after{{
-        content:'';flex:1;height:1px;background:{COLORS['border']};
+        content:'';flex:1;height:1px;background:{COLORS["border"]};
     }}
 
     /* ── Score panel ── */
     .score-panel{{
-        background:{COLORS['bg_white']};
-        border:1px solid {COLORS['border']};
+        background:{COLORS["bg_white"]};
+        border:1px solid {COLORS["border"]};
         border-radius:10px;padding:2rem 1.75rem;
         text-align:center;position:relative;overflow:hidden;
         animation:panel-appear 0.5s ease both;
@@ -164,11 +167,11 @@ def apply_theme():
     }}
     .score-panel::before{{
         content:'';position:absolute;top:0;left:0;right:0;height:3px;
-        background:linear-gradient(90deg,{COLORS['blue']},{COLORS['teal']});
+        background:linear-gradient(90deg,{COLORS["blue"]},{COLORS["teal"]});
     }}
     .score-eyebrow{{
         font-size:0.68rem;font-weight:700;letter-spacing:1.5px;
-        text-transform:uppercase;color:{COLORS['text_muted']};margin-bottom:0.5rem;
+        text-transform:uppercase;color:{COLORS["text_muted"]};margin-bottom:0.5rem;
     }}
     /* Score number — animated counter via JS */
     .score-value{{
@@ -193,21 +196,21 @@ def apply_theme():
     .score-track{{
         height:4px;border-radius:100px;
         background:linear-gradient(90deg,
-            {COLORS['poor']} 0%,{COLORS['fair']} 28%,
-            {COLORS['good']} 58%,{COLORS['excellent']} 100%);
+            {COLORS["poor"]} 0%,{COLORS["fair"]} 28%,
+            {COLORS["good"]} 58%,{COLORS["excellent"]} 100%);
         position:relative;margin-bottom:6px;
     }}
     .score-marker{{
         position:absolute;top:50%;
         width:11px;height:11px;border-radius:50%;
-        background:{COLORS['navy']};border:2px solid white;
+        background:{COLORS["navy"]};border:2px solid white;
         transform:translate(-50%,-50%);
         box-shadow:0 1px 4px rgba(0,0,0,0.25);
         transition:left 1.2s cubic-bezier(0.16,1,0.3,1);
     }}
     .score-track-labels{{
         display:flex;justify-content:space-between;
-        font-size:0.6rem;color:{COLORS['text_muted']};
+        font-size:0.6rem;color:{COLORS["text_muted"]};
         font-family:'JetBrains Mono',monospace;
     }}
 
@@ -217,8 +220,8 @@ def apply_theme():
         gap:0.9rem;margin-bottom:1.5rem;
     }}
     .metric-card{{
-        background:{COLORS['bg_white']};
-        border:1px solid {COLORS['border']};
+        background:{COLORS["bg_white"]};
+        border:1px solid {COLORS["border"]};
         border-radius:10px;padding:1.1rem 1.1rem 0.9rem;
         transition:box-shadow 0.2s,transform 0.2s,border-color 0.2s;
         animation:card-rise 0.4s ease both;
@@ -226,7 +229,7 @@ def apply_theme():
     .metric-card:hover{{
         box-shadow:0 4px 14px rgba(10,31,68,0.09);
         transform:translateY(-2px);
-        border-color:{COLORS['blue']};
+        border-color:{COLORS["blue"]};
     }}
     @keyframes card-rise{{
         from{{opacity:0;transform:translateY(10px)}}
@@ -239,13 +242,13 @@ def apply_theme():
     .metric-card:nth-child(5){{animation-delay:0.25s}}
     .metric-card:nth-child(6){{animation-delay:0.30s}}
     .metric-label{{
-        font-size:0.68rem;font-weight:700;color:{COLORS['text_muted']};
+        font-size:0.68rem;font-weight:700;color:{COLORS["text_muted"]};
         text-transform:uppercase;letter-spacing:0.8px;margin-bottom:0.45rem;
     }}
     .metric-value{{
         font-family:'JetBrains Mono',monospace;
         font-size:1.55rem;font-weight:600;
-        color:{COLORS['navy']};letter-spacing:-0.8px;
+        color:{COLORS["navy"]};letter-spacing:-0.8px;
         line-height:1;margin-bottom:0.45rem;
     }}
     .metric-badge{{
@@ -253,10 +256,10 @@ def apply_theme():
         font-size:0.7rem;font-weight:600;
         padding:0.18rem 0.5rem;border-radius:5px;
     }}
-    .b-good{{background:{COLORS['success_light']};color:{COLORS['success']};}}
-    .b-warn{{background:{COLORS['warning_light']};color:{COLORS['warning']};}}
-    .b-bad{{background:{COLORS['danger_light']};color:{COLORS['danger']};}}
-    .b-info{{background:{COLORS['blue_light']};color:{COLORS['blue']};}}
+    .b-good{{background:{COLORS["success_light"]};color:{COLORS["success"]};}}
+    .b-warn{{background:{COLORS["warning_light"]};color:{COLORS["warning"]};}}
+    .b-bad{{background:{COLORS["danger_light"]};color:{COLORS["danger"]};}}
+    .b-info{{background:{COLORS["blue_light"]};color:{COLORS["blue"]};}}
 
     /* ── Insight box (fixes **bold** rendering as asterisks) ── */
     .insight-box{{
@@ -266,22 +269,22 @@ def apply_theme():
         animation:fade-in 0.4s ease both 0.3s;
     }}
     .insight-box strong{{font-weight:700;}}
-    .insight-good{{background:{COLORS['success_light']};border-color:{COLORS['success']};color:#065f46;}}
-    .insight-warn{{background:{COLORS['warning_light']};border-color:{COLORS['warning']};color:#92400e;}}
-    .insight-bad{{background:{COLORS['danger_light']};border-color:{COLORS['danger']};color:#991b1b;}}
-    .insight-info{{background:{COLORS['blue_light']};border-color:{COLORS['blue']};color:#1e40af;}}
+    .insight-good{{background:{COLORS["success_light"]};border-color:{COLORS["success"]};color:#065f46;}}
+    .insight-warn{{background:{COLORS["warning_light"]};border-color:{COLORS["warning"]};color:#92400e;}}
+    .insight-bad{{background:{COLORS["danger_light"]};border-color:{COLORS["danger"]};color:#991b1b;}}
+    .insight-info{{background:{COLORS["blue_light"]};border-color:{COLORS["blue"]};color:#1e40af;}}
 
     /* ── Recommendation items ── */
     .rec-item{{
-        background:{COLORS['bg_white']};
-        border:1px solid {COLORS['border']};
+        background:{COLORS["bg_white"]};
+        border:1px solid {COLORS["border"]};
         border-radius:8px;padding:0.9rem 1rem;margin-bottom:0.55rem;
         transition:all 0.2s;display:flex;gap:0.8rem;align-items:flex-start;
         animation:slide-in 0.35s ease both;
     }}
     .rec-item:hover{{
-        border-color:{COLORS['blue']};
-        box-shadow:0 0 0 3px {COLORS['blue_light']};
+        border-color:{COLORS["blue"]};
+        box-shadow:0 0 0 3px {COLORS["blue_light"]};
         transform:translateX(3px);
     }}
     .rec-item:nth-child(1){{animation-delay:0.1s}}
@@ -295,13 +298,13 @@ def apply_theme():
     }}
     .rec-num{{
         width:22px;height:22px;min-width:22px;border-radius:6px;
-        background:{COLORS['navy']};color:white;
+        background:{COLORS["navy"]};color:white;
         font-size:0.68rem;font-weight:700;
         display:flex;align-items:center;justify-content:center;margin-top:1px;
     }}
     .rec-body{{flex:1;}}
     .rec-title-row{{
-        font-size:0.85rem;font-weight:700;color:{COLORS['text']};
+        font-size:0.85rem;font-weight:700;color:{COLORS["text"]};
         margin-bottom:0.25rem;display:flex;align-items:center;
         gap:0.45rem;flex-wrap:wrap;
     }}
@@ -311,16 +314,16 @@ def apply_theme():
         text-transform:uppercase;letter-spacing:0.4px;
     }}
     .tag-debt{{background:#EDE9FE;color:#5B21B6;}}
-    .tag-savings{{background:{COLORS['teal_light']};color:#065f46;}}
-    .tag-income{{background:{COLORS['success_light']};color:{COLORS['success']};}}
-    .tag-behaviour{{background:{COLORS['warning_light']};color:{COLORS['warning']};}}
-    .tag-expenses{{background:{COLORS['danger_light']};color:{COLORS['danger']};}}
+    .tag-savings{{background:{COLORS["teal_light"]};color:#065f46;}}
+    .tag-income{{background:{COLORS["success_light"]};color:{COLORS["success"]};}}
+    .tag-behaviour{{background:{COLORS["warning_light"]};color:{COLORS["warning"]};}}
+    .tag-expenses{{background:{COLORS["danger_light"]};color:{COLORS["danger"]};}}
     .rec-desc{{
-        font-size:0.8rem;color:{COLORS['text_secondary']};
+        font-size:0.8rem;color:{COLORS["text_secondary"]};
         line-height:1.6;margin-bottom:0.35rem;
     }}
     .rec-impact{{
-        font-size:0.72rem;font-weight:600;color:{COLORS['teal']};
+        font-size:0.72rem;font-weight:600;color:{COLORS["teal"]};
         display:inline-flex;align-items:center;gap:3px;
     }}
     .rec-impact::before{{content:'↑';font-weight:700;}}
@@ -329,43 +332,43 @@ def apply_theme():
     .step-row{{display:flex;align-items:center;gap:0.4rem;margin-bottom:1.5rem;}}
     .step-seg{{
         height:3px;border-radius:100px;flex:1;
-        background:{COLORS['border']};transition:background 0.3s;
+        background:{COLORS["border"]};transition:background 0.3s;
     }}
-    .step-seg.done{{background:{COLORS['blue']};}}
+    .step-seg.done{{background:{COLORS["blue"]};}}
     .step-meta{{
-        font-size:0.73rem;color:{COLORS['text_muted']};
+        font-size:0.73rem;color:{COLORS["text_muted"]};
         font-weight:500;margin-bottom:0.4rem;
     }}
-    .step-meta strong{{color:{COLORS['navy']};}}
+    .step-meta strong{{color:{COLORS["navy"]};}}
 
     /* ── Form inputs ── */
     .stNumberInput label,.stSelectbox label,
     .stSlider label,.stRadio label,.stTextInput label{{
         font-size:0.8rem!important;font-weight:600!important;
-        color:{COLORS['text_secondary']}!important;
+        color:{COLORS["text_secondary"]}!important;
         font-family:'Plus Jakarta Sans',sans-serif!important;
     }}
     .stTextInput input,.stNumberInput input{{
-        background:{COLORS['bg_white']}!important;
-        border:1.5px solid {COLORS['border_strong']}!important;
-        border-radius:7px!important;color:{COLORS['text']}!important;
+        background:{COLORS["bg_white"]}!important;
+        border:1.5px solid {COLORS["border_strong"]}!important;
+        border-radius:7px!important;color:{COLORS["text"]}!important;
         font-family:'JetBrains Mono',monospace!important;
         font-size:0.88rem!important;
         transition:border-color 0.15s,box-shadow 0.15s!important;
     }}
     .stTextInput input:focus,.stNumberInput input:focus{{
-        border-color:{COLORS['blue']}!important;
+        border-color:{COLORS["blue"]}!important;
         box-shadow:0 0 0 3px rgba(45,127,249,0.1)!important;
     }}
     .stSelectbox>div>div{{
-        background:{COLORS['bg_white']}!important;
-        border:1.5px solid {COLORS['border_strong']}!important;
-        border-radius:7px!important;color:{COLORS['text']}!important;
+        background:{COLORS["bg_white"]}!important;
+        border:1.5px solid {COLORS["border_strong"]}!important;
+        border-radius:7px!important;color:{COLORS["text"]}!important;
     }}
 
     /* ── PREMIUM BUTTONS ── */
     .stButton>button{{
-        background:{COLORS['blue']}!important;
+        background:{COLORS["blue"]}!important;
         color:white!important;border:none!important;
         border-radius:7px!important;
         padding:0.58rem 1.4rem!important;
@@ -388,7 +391,7 @@ def apply_theme():
     }}
     .stButton>button:hover::after{{left:130%!important;}}
     .stButton>button:hover{{
-        background:{COLORS['blue_hover']}!important;
+        background:{COLORS["blue_hover"]}!important;
         box-shadow:0 6px 20px rgba(45,127,249,0.35)!important;
         transform:translateY(-2px) scale(1.01)!important;
     }}
@@ -398,19 +401,19 @@ def apply_theme():
     }}
     .btn-secondary>button{{
         background:transparent!important;
-        color:{COLORS['text_secondary']}!important;
-        border:1.5px solid {COLORS['border_strong']}!important;
+        color:{COLORS["text_secondary"]}!important;
+        border:1.5px solid {COLORS["border_strong"]}!important;
         box-shadow:none!important;
     }}
     .btn-secondary>button:hover{{
-        border-color:{COLORS['blue']}!important;
-        color:{COLORS['blue']}!important;
-        background:{COLORS['blue_light']}!important;
+        border-color:{COLORS["blue"]}!important;
+        color:{COLORS["blue"]}!important;
+        background:{COLORS["blue_light"]}!important;
         box-shadow:none!important;
         transform:translateY(-1px)!important;
     }}
     .btn-teal>button{{
-        background:{COLORS['teal']}!important;color:white!important;
+        background:{COLORS["teal"]}!important;color:white!important;
     }}
     .btn-teal>button:hover{{
         background:#00A892!important;
@@ -420,8 +423,8 @@ def apply_theme():
     /* ── Trust note ── */
     .trust-note{{
         display:flex;align-items:center;gap:0.5rem;
-        font-size:0.77rem;color:{COLORS['success']};
-        background:{COLORS['success_light']};
+        font-size:0.77rem;color:{COLORS["success"]};
+        background:{COLORS["success_light"]};
         border:1px solid #A7F3D0;border-radius:7px;
         padding:0.5rem 0.85rem;margin-bottom:1.5rem;font-weight:500;
     }}
@@ -429,77 +432,77 @@ def apply_theme():
     /* ── Form section label ── */
     .form-section{{
         font-size:0.7rem;font-weight:700;text-transform:uppercase;
-        letter-spacing:1px;color:{COLORS['blue']};
+        letter-spacing:1px;color:{COLORS["blue"]};
         margin:1.25rem 0 0.75rem;padding-bottom:0.45rem;
-        border-bottom:1px solid {COLORS['blue_mid']};
+        border-bottom:1px solid {COLORS["blue_mid"]};
     }}
 
     /* ── Balance widget ── */
     .balance-widget{{
-        background:{COLORS['bg']};border:1px solid {COLORS['border']};
+        background:{COLORS["bg"]};border:1px solid {COLORS["border"]};
         border-radius:8px;padding:0.9rem 1.1rem;margin-top:0.9rem;
         display:flex;justify-content:space-between;align-items:center;
     }}
     .bal-label{{
         font-size:0.66rem;font-weight:600;text-transform:uppercase;
-        letter-spacing:0.8px;color:{COLORS['text_muted']};margin-bottom:0.2rem;
+        letter-spacing:0.8px;color:{COLORS["text_muted"]};margin-bottom:0.2rem;
     }}
     .bal-value{{
         font-family:'JetBrains Mono',monospace;
         font-size:1.15rem;font-weight:600;
-        color:{COLORS['navy']};letter-spacing:-0.5px;
+        color:{COLORS["navy"]};letter-spacing:-0.5px;
     }}
 
     /* ── Divider ── */
-    .fs-divider{{height:1px;background:{COLORS['border']};margin:1.75rem 0;}}
+    .fs-divider{{height:1px;background:{COLORS["border"]};margin:1.75rem 0;}}
 
     /* ── Stats strip — mobile-first responsive ── */
     .stats-strip{{
         display:grid;
         grid-template-columns:repeat(3,1fr);
-        background:{COLORS['bg_white']};
-        border:1px solid {COLORS['border']};
+        background:{COLORS["bg_white"]};
+        border:1px solid {COLORS["border"]};
         border-radius:10px;overflow:hidden;
         margin-bottom:3rem;
     }}
     .stats-cell{{
         padding:1.3rem 1rem;text-align:center;
-        border-right:1px solid {COLORS['border']};
+        border-right:1px solid {COLORS["border"]};
     }}
     .stats-cell:last-child{{border-right:none;}}
     .stats-num{{
         font-family:'JetBrains Mono',monospace;
         font-size:1.6rem;font-weight:600;
-        color:{COLORS['navy']};letter-spacing:-1px;
+        color:{COLORS["navy"]};letter-spacing:-1px;
     }}
     .stats-desc{{
-        font-size:0.68rem;color:{COLORS['text_muted']};
+        font-size:0.68rem;color:{COLORS["text_muted"]};
         text-transform:uppercase;letter-spacing:0.8px;
         margin-top:0.2rem;font-weight:600;
     }}
     /* Mobile: stack vertically if very narrow */
     @media(max-width:480px){{
         .stats-strip{{grid-template-columns:1fr;}}
-        .stats-cell{{border-right:none;border-bottom:1px solid {COLORS['border']};}}
+        .stats-cell{{border-right:none;border-bottom:1px solid {COLORS["border"]};}}
         .stats-cell:last-child{{border-bottom:none;}}
         .metric-grid{{grid-template-columns:repeat(2,1fr);}}
     }}
 
     /* ── Tabs ── */
     .stTabs [data-baseweb="tab-list"]{{
-        background:{COLORS['bg']}!important;border-radius:8px!important;
+        background:{COLORS["bg"]}!important;border-radius:8px!important;
         padding:3px!important;gap:2px!important;
-        border:1px solid {COLORS['border']}!important;
+        border:1px solid {COLORS["border"]}!important;
     }}
     .stTabs [data-baseweb="tab"]{{
-        background:transparent!important;color:{COLORS['text_muted']}!important;
+        background:transparent!important;color:{COLORS["text_muted"]}!important;
         border-radius:6px!important;
         font-family:'Plus Jakarta Sans',sans-serif!important;
         font-size:0.8rem!important;font-weight:600!important;
     }}
     .stTabs [aria-selected="true"]{{
-        background:{COLORS['bg_white']}!important;
-        color:{COLORS['navy']}!important;
+        background:{COLORS["bg_white"]}!important;
+        color:{COLORS["navy"]}!important;
         box-shadow:0 1px 3px rgba(0,0,0,0.08)!important;
     }}
 
@@ -509,29 +512,29 @@ def apply_theme():
 
     /* ── Scrollbar ── */
     ::-webkit-scrollbar{{width:5px;}}
-    ::-webkit-scrollbar-track{{background:{COLORS['bg']};}}
-    ::-webkit-scrollbar-thumb{{background:{COLORS['border_strong']};border-radius:3px;}}
+    ::-webkit-scrollbar-track{{background:{COLORS["bg"]};}}
+    ::-webkit-scrollbar-thumb{{background:{COLORS["border_strong"]};border-radius:3px;}}
 
     /* ── Share tip ── */
     .share-tip{{
-        text-align:center;font-size:0.77rem;color:{COLORS['text_muted']};
-        padding:0.7rem;border:1px dashed {COLORS['border_strong']};
+        text-align:center;font-size:0.77rem;color:{COLORS["text_muted"]};
+        padding:0.7rem;border:1px dashed {COLORS["border_strong"]};
         border-radius:8px;margin-top:1.5rem;
     }}
-    .share-tip strong{{color:{COLORS['blue']};}}
+    .share-tip strong{{color:{COLORS["blue"]};}}
 
     /* ── Progress toward next band ── */
     .next-band-bar{{
-        background:{COLORS['bg']};border:1px solid {COLORS['border']};
+        background:{COLORS["bg"]};border:1px solid {COLORS["border"]};
         border-radius:7px;padding:0.65rem 0.9rem;margin-bottom:0.75rem;
     }}
     .next-band-bar .bar-outer{{
-        height:3px;background:{COLORS['border']};
+        height:3px;background:{COLORS["border"]};
         border-radius:100px;margin-top:0.4rem;overflow:hidden;
     }}
     .next-band-bar .bar-inner{{
         height:3px;border-radius:100px;
-        background:linear-gradient(90deg,{COLORS['blue']},{COLORS['teal']});
+        background:linear-gradient(90deg,{COLORS["blue"]},{COLORS["teal"]});
         animation:grow-bar 1.2s cubic-bezier(0.16,1,0.3,1) both 0.6s;
     }}
     @keyframes grow-bar{{
@@ -539,24 +542,25 @@ def apply_theme():
         to{{width:var(--bar-width)!important;}}
     }}
     </style>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
 
-def nav_bar(active_page: str = "landing",
-            score: int = None, band: str = None):
+def nav_bar(active_page: str = "landing", score: Optional[int] = None, band: Optional[str] = None):
     pages = [
-        ("landing",        "Home"),
-        ("results",        "My Score"),
+        ("landing", "Home"),
+        ("results", "My Score"),
         ("loan_simulator", "Loan Simulator"),
-        ("advisor",        "AI Advisor"),
+        ("advisor", "AI Advisor"),
     ]
     links = ""
     for key, label in pages:
         cls = "active" if key == active_page else ""
         links += (
             f'<button class="fs-nav-link {cls}" '
-            f'onclick="window.parent.postMessage(\'nav:{key}\',\'*\')">'
-            f'{label}</button>'
+            f"onclick=\"window.parent.postMessage('nav:{key}','*')\">"
+            f"{label}</button>"
         )
 
     right_html = ""
@@ -572,7 +576,8 @@ def nav_bar(active_page: str = "landing",
             <span class="fs-badge">{band}</span>
         </div>"""
 
-    st.markdown(f"""
+    st.markdown(
+        f"""
     <div class="fs-topbar">
         <div class="fs-logo">
             <div class="fs-logo-dot"></div>
@@ -581,14 +586,18 @@ def nav_bar(active_page: str = "landing",
         <div class="fs-nav-center">{links}</div>
         <div>{right_html}</div>
     </div>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )
 
 
 def page_header(title: str, subtitle: str = ""):
-    sub = (f'<div class="fs-page-subtitle">{subtitle}</div>'
-           if subtitle else "")
-    st.markdown(f"""
+    sub = f'<div class="fs-page-subtitle">{subtitle}</div>' if subtitle else ""
+    st.markdown(
+        f"""
     <div class="fs-page-header">
         <div class="fs-page-title">{title}</div>{sub}
     </div>
-    """, unsafe_allow_html=True)
+    """,
+        unsafe_allow_html=True,
+    )

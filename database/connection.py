@@ -5,7 +5,7 @@ from config import config
 
 engine = create_engine(
     config.DATABASE_URL,
-    connect_args={"check_same_thread": False}  # needed for SQLite
+    connect_args={"check_same_thread": False},  # needed for SQLite
 )
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
@@ -26,5 +26,5 @@ def get_db():
 
 def init_db():
     """Creates all tables. Call once on app startup."""
-    from database.models import Assessment, Score, RecommendationRecord
+
     Base.metadata.create_all(bind=engine)

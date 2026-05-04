@@ -2,7 +2,7 @@
 Runs on server startup.
 Creates required directories and trains the model if artifacts are missing.
 """
-import os
+
 from pathlib import Path
 
 
@@ -25,6 +25,7 @@ def ensure_model_exists():
     if not model_path.exists():
         print("▶ No model found — training now...")
         from ml.train import train
+
         train()
         print("✅ Model trained and saved.")
     else:

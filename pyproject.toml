@@ -1,0 +1,13 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "finsight"
+version = "0.1.0"
+description = "FinSight — credit scoring and loan simulator web app"
+readme = "README.md"
+authors = [
+  { name = "FinSight Team" }
+]
+dependencies = []

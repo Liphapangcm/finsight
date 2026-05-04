@@ -1,71 +1,71 @@
-# app/main.py
-"""
-FinSight — Main entry point.
-Fixes:
-- Sidebar pages giving blank white screen
-- SessionInfo warning before page loads
-- White reload flashes (use st.session_state guards)
-- Loan simulator button returning to home
-"""
-import sys
-import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
-
-# ── Page config MUST be the very first Streamlit call ─────────────
+# app/components/kpi_cards.py
 import streamlit as st
+from core.schemas import FinancialKPIs
+from app.styles.theme import COLORS
 
-st.set_page_config(
-    page_title           = "FinSight — Credit Scoring",
-    page_icon            = "📊",
-    layout               = "wide",
-    initial_sidebar_state= "collapsed",   # keep sidebar collapsed
-)
 
-# ── NOW run startup (after set_page_config, before other imports) ──
-from startup import ensure_model_exists
-ensure_model_exists()
+def render_kpi_cards(kpis: FinancialKPIs):
+    dti  = max(kpis.debt_to_income, 0)
+    sr   = max(kpis.savings_rate,   0)
+    flow = kpis.net_cash_flow
+    exp  = kpis.expense_ratio
 
-# ── Remaining imports ──────────────────────────────────────────────
-from app.styles.theme     import apply_theme, nav_bar
-from app.pages.landing    import render_landing
-from app.pages.assessment import render_assessment
-from app.pages.results    import render_results
-from app.pages.loan_sim   import render_loan_simulator
-from app.pages.advisor    import render_advisor
+    def _badge(cls, label):
+        return f'<div class="metric-badge {cls}">{label}</div>'
 
-# ── Apply theme ────────────────────────────────────────────────────
-apply_theme()
+    if dti == 0:
+        dti_badge = _badge("b-good", "No Debt")
+    elif dti < 35:
+        dti_badge = _badge("b-good", "Healthy")
+    elif dti < 50:
+        dti_badge = _badge("b-warn", "Moderate")
+    else:
+        dti_badge = _badge("b-bad",  "High Risk")
 
-# ── Initialise session state defaults (prevent white flash) ────────
-if 'page' not in st.session_state:
-    st.session_state['page'] = 'landing'
-if 'form_step' not in st.session_state:
-    st.session_state['form_step'] = 1
+    if sr == 0:
+        sr_badge = _badge("b-bad",  "None")
+    elif sr < 3:
+        sr_badge = _badge("b-bad",  "Very Low")
+    elif sr < 10:
+        sr_badge = _badge("b-warn", "Low")
+    else:
+        sr_badge = _badge("b-good", "Strong")
 
-# ── Nav bar (passes score if available) ───────────────────────────
-result = st.session_state.get('result')
-if result:
-    nav_bar(
-        active_page = st.session_state['page'],
-        score       = result.credit_score,
-        band        = result.score_band,
-    )
-else:
-    nav_bar(active_page=st.session_state['page'])
+    flow_badge = (_badge("b-good", "Surplus")
+                  if flow >= 0 else _badge("b-bad", "Deficit ⚠"))
 
-# ── Router ─────────────────────────────────────────────────────────
-page = st.session_state['page']
+    if exp < 70:
+        exp_badge = _badge("b-good", "Healthy")
+    elif exp < 90:
+        exp_badge = _badge("b-warn", "Elevated")
+    else:
+        exp_badge = _badge("b-bad", "High")
 
-if page == 'landing':
-    render_landing()
-elif page == 'assessment':
-    render_assessment()
-elif page == 'results':
-    render_results()
-elif page == 'loan_simulator':
-    render_loan_simulator()
-elif page == 'advisor':
-    render_advisor()
-else:
-    st.session_state['page'] = 'landing'
-    st.rerun()
+    flow_sign  = "+" if flow >= 0 else ""
+    flow_color = COLORS["good"] if flow >= 0 else COLORS["danger"]
+
+    cards = [
+        ("DEBT-TO-INCOME",    f"{dti:.1f}%",
+         COLORS["navy"],      dti_badge),
+        ("SAVINGS RATE",      f"{sr:.1f}%",
+         COLORS["navy"],      sr_badge),
+        ("MONTHLY CASH FLOW", f"M{flow_sign}{flow:,.0f}",
+         flow_color,          flow_badge),
+        ("EXPENSE RATIO",     f"{exp:.1f}%",
+         COLORS["navy"],      exp_badge),
+        ("MONTHLY INCOME",    f"M{kpis.monthly_income:,.0f}",
+         COLORS["navy"],      _badge("b-info", "Reported")),
+        ("TOTAL EXPENSES",    f"M{kpis.total_expenses:,.0f}",
+         COLORS["navy"],      exp_badge),
+    ]
+
+    html = '<div class="metric-grid">'
+    for label, value, color, badge in cards:
+        html += f"""
+        <div class="metric-card">
+            <div class="metric-label">{label}</div>
+            <div class="metric-value" style="color:{color};">{value}</div>
+            {badge}
+        </div>"""
+    html += '</div>'
+    st.markdown(html, unsafe_allow_html=True)

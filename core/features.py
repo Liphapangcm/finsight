@@ -48,7 +48,7 @@ def engineer_features(raw: dict) -> pd.DataFrame:
         'housing_burden':        raw['housing_expense'] / income,
         'discretionary_ratio':   (income - essential) / income,
         'affordability_index':   net_flow / income,
-        'debt_service_ratio':    (raw['total_debt'] * 0.03) / income,
+        'debt_service_ratio':    max(0, (raw['total_debt'] * 0.03) / income),
         'savings_consistency':   int(raw.get('has_savings', 0)) * sav_rate,
         'net_monthly_cash_flow': net_flow,
         'num_active_loans':      raw['num_active_loans'],
@@ -80,7 +80,7 @@ def compute_kpis(raw: dict) -> dict:
         'monthly_income':       raw['monthly_income'],
         'total_expenses':       total_exp,
         'net_cash_flow':        net_flow,
-        'debt_to_income':       round(raw['total_debt'] / income * 100, 1),
+        'debt_to_income':  round(max(0, raw['total_debt'] / income) * 100, 1),
         'savings_rate':         round(raw.get('monthly_savings', 0)
                                       / income * 100, 1),
         'expense_ratio':        round(total_exp / income * 100, 1),

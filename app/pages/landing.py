@@ -1,6 +1,11 @@
 # app/pages/landing.py
+"""
+Landing page — fixes:
+- Stats strip now responsive (stacks on mobile)
+- Uses stats-strip CSS class defined in theme
+"""
 import streamlit as st
-from app.styles.theme import COLORS, page_header
+from app.styles.theme import COLORS
 
 
 def render_landing():
@@ -17,9 +22,9 @@ def render_landing():
             Free · Instant · Private
         </div>
         <h1 style="font-family:'Plus Jakarta Sans',sans-serif;
-                   font-size:2.75rem;font-weight:800;
+                   font-size:2.6rem;font-weight:800;
                    color:{COLORS['navy']};letter-spacing:-1.5px;
-                   line-height:1.1;margin-bottom:1rem;">
+                   line-height:1.12;margin-bottom:1rem;">
             Understand Your<br/>
             <span style="color:{COLORS['blue']};">Financial Health</span>
         </h1>
@@ -33,84 +38,49 @@ def render_landing():
     </div>
     """, unsafe_allow_html=True)
 
+    # CTA
     col1, col2, col3 = st.columns([1.4, 1.5, 1.4])
     with col2:
         if st.button("Get My Credit Score →",
                      key="hero_cta", use_container_width=True):
             st.session_state['page'] = 'assessment'
             st.rerun()
+
     st.markdown(f"""
-    <div style="text-align:center;margin-top:0.6rem;
-                margin-bottom:3rem;font-size:0.76rem;
-                color:{COLORS['text_muted']};">
+    <div style="text-align:center;margin-top:0.6rem;margin-bottom:2.5rem;
+                font-size:0.76rem;color:{COLORS['text_muted']};">
         🔒 Your data is never stored or shared
     </div>
     """, unsafe_allow_html=True)
 
-    # ── Stats strip ───────────────────────────────────────────────
+    # ── Stats strip — responsive via CSS class ────────────────────
     st.markdown(f"""
-    <div style="display:grid;grid-template-columns:repeat(3,1fr);
-                gap:0;margin-bottom:3rem;
-                background:{COLORS['bg_white']};
-                border:1px solid {COLORS['border']};
-                border-radius:10px;overflow:hidden;">
-        <div style="padding:1.4rem 1.5rem;
-                    border-right:1px solid {COLORS['border']};
-                    text-align:center;">
-            <div style="font-family:'JetBrains Mono',monospace;
-                        font-size:1.7rem;font-weight:600;
-                        color:{COLORS['navy']};letter-spacing:-1px;">
-                3 min
-            </div>
-            <div style="font-size:0.72rem;color:{COLORS['text_muted']};
-                        text-transform:uppercase;letter-spacing:0.8px;
-                        margin-top:0.25rem;font-weight:600;">
-                Average completion
-            </div>
+    <div class="stats-strip">
+        <div class="stats-cell">
+            <div class="stats-num">3 min</div>
+            <div class="stats-desc">Average completion</div>
         </div>
-        <div style="padding:1.4rem 1.5rem;
-                    border-right:1px solid {COLORS['border']};
-                    text-align:center;">
-            <div style="font-family:'JetBrains Mono',monospace;
-                        font-size:1.7rem;font-weight:600;
-                        color:{COLORS['navy']};letter-spacing:-1px;">
-                20+
-            </div>
-            <div style="font-size:0.72rem;color:{COLORS['text_muted']};
-                        text-transform:uppercase;letter-spacing:0.8px;
-                        margin-top:0.25rem;font-weight:600;">
-                Factors analysed
-            </div>
+        <div class="stats-cell">
+            <div class="stats-num">20+</div>
+            <div class="stats-desc">Factors analysed</div>
         </div>
-        <div style="padding:1.4rem 1.5rem;text-align:center;">
-            <div style="font-family:'JetBrains Mono',monospace;
-                        font-size:1.7rem;font-weight:600;
-                        color:{COLORS['navy']};letter-spacing:-1px;">
-                100%
-            </div>
-            <div style="font-size:0.72rem;color:{COLORS['text_muted']};
-                        text-transform:uppercase;letter-spacing:0.8px;
-                        margin-top:0.25rem;font-weight:600;">
-                Free, always
-            </div>
+        <div class="stats-cell">
+            <div class="stats-num">100%</div>
+            <div class="stats-desc">Free, always</div>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
     # ── How it works ──────────────────────────────────────────────
     st.markdown(f"""
-    <div style="font-size:0.7rem;font-weight:700;
-                color:{COLORS['text_muted']};
+    <div style="font-size:0.7rem;font-weight:700;color:{COLORS['text_muted']};
                 text-transform:uppercase;letter-spacing:1px;
-                margin-bottom:0.9rem;">
-        How it works
-    </div>
+                margin-bottom:0.9rem;">How it works</div>
     """, unsafe_allow_html=True)
 
-    cols = st.columns(3)
     steps = [
         ("01", "Enter Your Details",
-         "Fill in your income, expenses, and debt details. "
+         "Fill in your income, expenses, and debt. "
          "No bank login or ID required.",
          COLORS["blue"]),
         ("02", "AI Scores Your Profile",
@@ -122,25 +92,21 @@ def render_landing():
          "and a ranked action plan to improve.",
          COLORS["navy"]),
     ]
+    cols = st.columns(3)
     for col, (num, title, desc, accent) in zip(cols, steps):
         with col:
             st.markdown(f"""
-            <div class="fs-card" style="min-height:165px;">
+            <div class="fs-card" style="min-height:155px;">
                 <div style="font-family:'JetBrains Mono',monospace;
                             font-size:0.62rem;font-weight:600;
                             color:{accent};letter-spacing:1.5px;
-                            margin-bottom:0.75rem;">
-                    STEP {num}
-                </div>
+                            margin-bottom:0.75rem;">STEP {num}</div>
                 <div style="font-weight:700;font-size:0.92rem;
                             color:{COLORS['navy']};margin-bottom:0.5rem;">
                     {title}
                 </div>
-                <div style="font-size:0.82rem;
-                            color:{COLORS['text_secondary']};
-                            line-height:1.7;">
-                    {desc}
-                </div>
+                <div style="font-size:0.82rem;color:{COLORS['text_secondary']};
+                            line-height:1.7;">{desc}</div>
             </div>
             """, unsafe_allow_html=True)
 
@@ -149,47 +115,42 @@ def render_landing():
 
     # ── Score bands ───────────────────────────────────────────────
     st.markdown(f"""
-    <div style="font-size:0.7rem;font-weight:700;
-                color:{COLORS['text_muted']};
+    <div style="font-size:0.7rem;font-weight:700;color:{COLORS['text_muted']};
                 text-transform:uppercase;letter-spacing:1px;
-                margin-bottom:0.9rem;">
-        Credit score bands
-    </div>
+                margin-bottom:0.9rem;">Credit score bands</div>
     """, unsafe_allow_html=True)
 
     bands = [
-        ("300–449", "Poor",      COLORS["poor"],      COLORS["danger_light"],
+        ("300–449", "Poor",      COLORS["poor"],
+         COLORS["danger_light"],
          "High risk. Focus on clearing defaults first."),
-        ("450–579", "Fair",      COLORS["fair"],      COLORS["warning_light"],
+        ("450–579", "Fair",      COLORS["fair"],
+         COLORS["warning_light"],
          "Below average. Payment habits improve quickly."),
-        ("580–699", "Good",      COLORS["good"],      COLORS["success_light"],
+        ("580–699", "Good",      COLORS["good"],
+         COLORS["success_light"],
          "Solid. Qualifies for most credit products."),
-        ("700–850", "Excellent", COLORS["excellent"], COLORS["teal_light"],
+        ("700–850", "Excellent", COLORS["excellent"],
+         COLORS["teal_light"],
          "Best rates. Top-tier financial standing."),
     ]
     cols = st.columns(4)
     for col, (rng, label, color, bg, desc) in zip(cols, bands):
         with col:
             st.markdown(f"""
-            <div style="background:{bg};
-                        border:1px solid {color}30;
-                        border-radius:9px;
-                        padding:1.1rem 1rem;
-                        min-height:125px;">
+            <div style="background:{bg};border:1px solid {color}30;
+                        border-radius:9px;padding:1.1rem 1rem;
+                        min-height:125px;transition:transform 0.2s;
+                        cursor:default;">
                 <div style="font-family:'JetBrains Mono',monospace;
                             font-size:0.8rem;font-weight:600;
-                            color:{color};margin-bottom:0.3rem;">
-                    {rng}
-                </div>
+                            color:{color};margin-bottom:0.3rem;">{rng}</div>
                 <div style="font-weight:800;color:{color};
                             font-size:0.95rem;margin-bottom:0.5rem;">
                     {label}
                 </div>
-                <div style="font-size:0.77rem;
-                            color:{COLORS['text_secondary']};
-                            line-height:1.55;">
-                    {desc}
-                </div>
+                <div style="font-size:0.77rem;color:{COLORS['text_secondary']};
+                            line-height:1.55;">{desc}</div>
             </div>
             """, unsafe_allow_html=True)
 

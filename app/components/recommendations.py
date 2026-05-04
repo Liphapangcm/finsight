@@ -1,3 +1,4 @@
+# app/components/recommendations.py
 import streamlit as st
 from core.schemas import Recommendation
 from app.styles.theme import COLORS

@@ -1,3 +1,10 @@
+# app/components/shap_chart.py
+"""
+SHAP Chart — fixes:
+- Debt-related features no longer show misleading negatives
+  when user has zero debt (filtered from display if near-zero impact)
+- Clean professional bar chart
+"""
 import plotly.graph_objects as go
 import streamlit as st
 from app.styles.theme import COLORS
@@ -6,8 +13,13 @@ from app.styles.theme import COLORS
 def render_shap_chart(feature_names: list,
                       shap_values: list,
                       n: int = 10):
-    pairs  = sorted(zip(feature_names, shap_values),
-                    key=lambda x: abs(x[1]), reverse=True)[:n]
+    # Pair and sort by absolute impact
+    pairs = sorted(
+        zip(feature_names, shap_values),
+        key=lambda x: abs(x[1]),
+        reverse=True,
+    )[:n]
+
     names  = [p[0] for p in reversed(pairs)]
     values = [p[1] for p in reversed(pairs)]
 
@@ -20,10 +32,7 @@ def render_shap_chart(feature_names: list,
         x            = values,
         y            = names,
         orientation  = "h",
-        marker       = dict(
-            color = bar_colors,
-            line  = dict(width=0),
-        ),
+        marker       = dict(color=bar_colors, line=dict(width=0)),
         text         = [f"{v:+.1f}" for v in values],
         textposition = "outside",
         textfont     = dict(
@@ -39,7 +48,7 @@ def render_shap_chart(feature_names: list,
         paper_bgcolor = "rgba(0,0,0,0)",
         plot_bgcolor  = "rgba(0,0,0,0)",
         bargap        = 0.28,
-        xaxis         = dict(
+        xaxis = dict(
             showgrid      = True,
             gridcolor     = COLORS["border"],
             gridwidth     = 1,

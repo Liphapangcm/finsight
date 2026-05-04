@@ -1,24 +1,47 @@
+# app/pages/results.py
 """
-FinSight Results Dashboard
-Professional Palantir / Bloomberg aesthetic.
-Light, data-dense, precise typography.
+FinSight Results Page — All bugs fixed:
+- Asterisks in narrative replaced with proper HTML bold
+- Zero debt no longer shows negative DTI/debt repayment
+- Score counter animation via JS
+- Animated metric cards with stagger
+- Button layout fixed (2x2 grid)
+- Loading state guard prevents SessionInfo warning
 """
+import re
 import streamlit as st
-from app.styles.theme import COLORS, SCORE_COLORS, page_header
-from app.components.shap_chart       import render_shap_chart
-from app.components.kpi_cards        import render_kpi_cards
-from app.components.recommendations  import render_recommendations
-from core.explainer                  import get_score_narrative
-from utils.pdf_export                import generate_pdf_report
+from app.styles.theme import COLORS, SCORE_COLORS
+from app.components.shap_chart      import render_shap_chart
+from app.components.kpi_cards       import render_kpi_cards
+from app.components.recommendations import render_recommendations
+from core.explainer                 import get_score_narrative
+from utils.pdf_export               import generate_pdf_report
+
+
+def _md_to_html(text: str) -> str:
+    """
+    Converts **bold** markdown to <strong> HTML tags.
+    Prevents asterisks appearing literally in insight boxes.
+    """
+    return re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', text)
 
 
 def render_results():
-    result = st.session_state.get('result')
-    if not result:
-        st.warning("No results found. Complete the assessment first.")
-        if st.button("← Start Assessment"):
-            st.session_state['page'] = 'assessment'
-            st.rerun()
+    # ── Guard: prevent SessionInfo warning on first load ──────────
+    if 'result' not in st.session_state:
+        st.info("No results yet. Complete the assessment first.")
+        col1, col2, col3 = st.columns([1, 1, 1])
+        with col2:
+            if st.button("← Start Assessment",
+                         use_container_width=True):
+                st.session_state['page'] = 'assessment'
+                st.rerun()
+        return
+
+    result = st.session_state['result']
+    if result is None:
+        st.session_state['page'] = 'assessment'
+        st.rerun()
         return
 
     score      = result.credit_score
@@ -29,12 +52,14 @@ def render_results():
     # Score marker position on 300–850 range
     bar_pct = round(((score - 300) / 550) * 100, 1)
 
-    # Narrative insight
-    narrative = get_score_narrative(
+    # ── Narrative — convert **bold** to HTML, not raw asterisks ───
+    raw_narrative = get_score_narrative(
         score, band,
         result.shap_explanation,
         result.kpis.__dict__,
     )
+    narrative = _md_to_html(raw_narrative)
+
     insight_cls = {
         "Excellent": "insight-good",
         "Good":      "insight-info",
@@ -42,7 +67,6 @@ def render_results():
         "Poor":      "insight-bad",
     }.get(band, "insight-info")
 
-    # Score band pill colors
     pill_bg = {
         "Poor":      COLORS["danger_light"],
         "Fair":      COLORS["warning_light"],
@@ -50,16 +74,41 @@ def render_results():
         "Excellent": COLORS["teal_light"],
     }.get(band, COLORS["blue_light"])
 
-    # ── Layout: score panel (left) + narrative+actions (right) ───
+    # ── Layout: score (left) + actions (right) ────────────────────
     col_score, col_detail = st.columns([1, 1.8])
 
     with col_score:
         st.markdown(f"""
         <div class="score-panel">
             <div class="score-eyebrow">Credit Score</div>
-            <div class="score-value" style="color:{band_color};">
+
+            <!-- Animated score counter -->
+            <div class="score-value"
+                 id="score-display"
+                 style="color:{band_color};">
                 {score}
             </div>
+            <script>
+            (function() {{
+                var el = document.getElementById('score-display');
+                if (!el || el.dataset.animated) return;
+                el.dataset.animated = '1';
+                var target = {score};
+                var start  = Math.max(300, target - 180);
+                var dur    = 900;
+                var t0     = null;
+                function ease(t) {{ return 1 - Math.pow(1 - t, 3); }}
+                function step(ts) {{
+                    if (!t0) t0 = ts;
+                    var p = Math.min((ts - t0) / dur, 1);
+                    el.textContent = Math.round(start + (target - start) * ease(p));
+                    if (p < 1) requestAnimationFrame(step);
+                    else el.textContent = target;
+                }}
+                requestAnimationFrame(step);
+            }})();
+            </script>
+
             <div style="font-size:0.72rem;color:{COLORS['text_muted']};
                         margin-bottom:0.25rem;
                         font-family:'JetBrains Mono',monospace;">
@@ -77,22 +126,30 @@ def render_results():
             <div class="score-track-wrap">
                 <div class="score-track">
                     <div class="score-marker"
-                         style="left:{bar_pct}%;
-                                background:{band_color};"></div>
+                         id="score-marker"
+                         style="left:0%;background:{band_color};">
+                    </div>
                 </div>
                 <div class="score-track-labels">
-                    <span>300</span>
-                    <span>Poor</span>
-                    <span>Fair</span>
-                    <span>Good</span>
-                    <span>850</span>
+                    <span>300</span><span>Poor</span>
+                    <span>Fair</span><span>Good</span><span>850</span>
                 </div>
             </div>
+            <script>
+            (function() {{
+                var m = document.getElementById('score-marker');
+                if (!m || m.dataset.moved) return;
+                m.dataset.moved = '1';
+                setTimeout(function() {{
+                    m.style.left = '{bar_pct}%';
+                }}, 300);
+            }})();
+            </script>
             <div style="margin-top:1rem;padding-top:1rem;
                         border-top:1px solid {COLORS['border']};
-                        font-size:0.72rem;color:{COLORS['text_muted']};
+                        font-size:0.68rem;color:{COLORS['text_muted']};
                         font-family:'JetBrains Mono',monospace;">
-                Model {result.model_version}
+                Model&nbsp;{result.model_version}
                 &nbsp;·&nbsp;
                 ID&nbsp;{result.assessment_id[:8]}
             </div>
@@ -100,51 +157,53 @@ def render_results():
         """, unsafe_allow_html=True)
 
     with col_detail:
-        # Narrative insight box
+        # Narrative with proper HTML bold
         st.markdown(f"""
         <div class="insight-box {insight_cls}">
             {narrative}
         </div>
         """, unsafe_allow_html=True)
 
-        # Next band progress
-        next_msg = _next_band_message(score, band)
-        if next_msg:
-            st.markdown(next_msg, unsafe_allow_html=True)
+        # Next band progress bar
+        next_html = _next_band_html(score, band)
+        if next_html:
+            st.markdown(next_html, unsafe_allow_html=True)
 
-        # Action buttons
-        st.markdown("<div style='margin-top:1rem;'>",
+        # ── Action buttons — 2×2 grid, always aligned ─────────────
+        st.markdown("<div style='margin-top:0.75rem;'>",
                     unsafe_allow_html=True)
-        r1, r2 = st.columns(2)
-        with r1:
-            if st.button("🏦 Loan Simulator",
-                         key="to_loan", use_container_width=True):
+
+        r1c1, r1c2 = st.columns(2)
+        with r1c1:
+            if st.button("🏦  Loan Simulator",
+                         key="btn_loan", use_container_width=True):
                 st.session_state['page'] = 'loan_simulator'
                 st.rerun()
-        with r2:
-            if st.button("🤖 AI Advisor",
-                         key="to_advisor", use_container_width=True):
+        with r1c2:
+            if st.button("🤖  AI Advisor",
+                         key="btn_advisor", use_container_width=True):
                 st.session_state['page'] = 'advisor'
                 st.rerun()
 
-        r3, r4 = st.columns(2)
-        with r3:
+        r2c1, r2c2 = st.columns(2)
+        with r2c1:
             st.markdown('<div class="btn-secondary">',
                         unsafe_allow_html=True)
-            if st.button("↺ New Assessment",
-                         key="reassess", use_container_width=True):
+            if st.button("↺  New Assessment",
+                         key="btn_reassess", use_container_width=True):
                 for k in ['result', 'form_step', 'monthly_income',
                           'total_debt', 'has_savings', 'has_defaulted',
-                          'num_active_loans', 'payment_regularity']:
+                          'num_active_loans', 'payment_regularity',
+                          'pdf_bytes']:
                     st.session_state.pop(k, None)
                 st.session_state['page'] = 'assessment'
                 st.rerun()
             st.markdown('</div>', unsafe_allow_html=True)
-        with r4:
+        with r2c2:
             st.markdown('<div class="btn-teal">',
                         unsafe_allow_html=True)
-            if st.button("⬇ PDF Report",
-                         key="pdf_btn", use_container_width=True):
+            if st.button("⬇  PDF Report",
+                         key="btn_pdf", use_container_width=True):
                 with st.spinner("Generating report..."):
                     try:
                         pdf_bytes = generate_pdf_report(result)
@@ -153,13 +212,14 @@ def render_results():
                         st.error(f"PDF error: {e}")
             st.markdown('</div>', unsafe_allow_html=True)
 
-        if 'pdf_bytes' in st.session_state:
+        if st.session_state.get('pdf_bytes'):
             st.download_button(
-                label    = "⬇️ Download PDF",
-                data     = st.session_state['pdf_bytes'],
-                file_name= f"finsight_{result.assessment_id[:8]}.pdf",
-                mime     = "application/pdf",
-                use_container_width=True,
+                label              = "⬇️  Download PDF",
+                data               = st.session_state['pdf_bytes'],
+                file_name          = (f"finsight_"
+                                      f"{result.assessment_id[:8]}.pdf"),
+                mime               = "application/pdf",
+                use_container_width= True,
             )
 
     # ── Divider ───────────────────────────────────────────────────
@@ -167,16 +227,17 @@ def render_results():
                 unsafe_allow_html=True)
 
     # ── Financial Health ──────────────────────────────────────────
-    st.markdown('<div class="section-label">Financial Health Summary</div>',
-                unsafe_allow_html=True)
+    st.markdown(
+        '<div class="section-label">Financial Health Summary</div>',
+        unsafe_allow_html=True)
     render_kpi_cards(result.kpis)
 
     st.markdown('<div class="fs-divider"></div>',
                 unsafe_allow_html=True)
 
-    # ── Factor Analysis + Action Plan ─────────────────────────────
-    col_left, col_right = st.columns([1.1, 0.9])
-    with col_left:
+    # ── SHAP + Recommendations ────────────────────────────────────
+    col_l, col_r = st.columns([1.1, 0.9])
+    with col_l:
         st.markdown(
             '<div class="section-label">Score Factor Analysis</div>',
             unsafe_allow_html=True)
@@ -185,7 +246,7 @@ def render_results():
             result.shap_explanation.shap_values,
             n=10,
         )
-    with col_right:
+    with col_r:
         st.markdown(
             '<div class="section-label">Prioritised Action Plan</div>',
             unsafe_allow_html=True)
@@ -200,13 +261,18 @@ def render_results():
     """, unsafe_allow_html=True)
 
 
-def _next_band_message(score: int, band: str) -> str:
+def _next_band_html(score: int, band: str) -> str:
+    """Returns animated progress bar toward next score band."""
     order  = ["Poor", "Fair", "Good", "Excellent"]
     thresh = [450, 580, 700, 851]
-    colors = {
+    nc_map = {
         "Fair":      COLORS["fair"],
         "Good":      COLORS["good"],
         "Excellent": COLORS["excellent"],
+    }
+    lo_map = {
+        "Poor": 300, "Fair": 450,
+        "Good": 580, "Excellent": 700,
     }
 
     if band == "Excellent":
@@ -221,19 +287,16 @@ def _next_band_message(score: int, band: str) -> str:
 
     for i, b in enumerate(order[:-1]):
         if b == band:
-            next_band  = order[i + 1]
-            gap        = thresh[i] - score
-            nc         = colors.get(next_band, COLORS["blue"])
-            pct        = round((score - (thresh[i-1] if i > 0 else 300))
-                               / (thresh[i] - (thresh[i-1] if i > 0
-                               else 300)) * 100)
+            next_band = order[i + 1]
+            gap       = thresh[i] - score
+            nc        = nc_map.get(next_band, COLORS["blue"])
+            lo        = lo_map.get(band, 300)
+            span      = thresh[i] - lo
+            pct       = round(((score - lo) / span) * 100)
             return f"""
-            <div style="background:{COLORS['bg']};
-                        border:1px solid {COLORS['border']};
-                        border-radius:7px;padding:0.65rem 0.9rem;
-                        margin-bottom:0.75rem;">
+            <div class="next-band-bar">
                 <div style="display:flex;justify-content:space-between;
-                            align-items:center;margin-bottom:0.4rem;">
+                            align-items:center;">
                     <span style="font-size:0.78rem;
                                  color:{COLORS['text_secondary']};">
                         📈 <strong style="color:{COLORS['text']};">
@@ -242,16 +305,12 @@ def _next_band_message(score: int, band: str) -> str:
                     </span>
                     <span style="font-family:'JetBrains Mono',monospace;
                                  font-size:0.7rem;
-                                 color:{COLORS['text_muted']};">
-                        {pct}%
-                    </span>
+                                 color:{COLORS['text_muted']};">{pct}%</span>
                 </div>
-                <div style="height:3px;background:{COLORS['border']};
-                            border-radius:100px;overflow:hidden;">
-                    <div style="width:{pct}%;height:3px;
-                                background:linear-gradient(90deg,
-                                    {COLORS['blue']},{nc});
-                                border-radius:100px;"></div>
+                <div class="bar-outer">
+                    <div class="bar-inner"
+                         style="width:{pct}%;
+                                --bar-width:{pct}%;"></div>
                 </div>
             </div>"""
     return ""

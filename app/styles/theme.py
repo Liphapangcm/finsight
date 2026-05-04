@@ -1,7 +1,8 @@
+# app/styles/theme.py
 """
-FinSight Professional Theme
-Aesthetic: Palantir / Stripe / Bloomberg — light, precise, data-focused.
-Clean navy header system, white content areas, electric blue accents.
+FinSight Professional Theme — Fixed & Enhanced
+Fixes: asterisks in markdown, mobile layout, button animations,
+       score counter animation, premium micro-interactions.
 """
 import streamlit as st
 
@@ -49,7 +50,7 @@ def apply_theme():
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
 
-    *,*::before,*::after{{box-sizing:border-box;}}
+    *,*::before,*::after{{box-sizing:border-box;margin:0;padding:0;}}
 
     .stApp{{
         background:{COLORS['bg']};
@@ -58,23 +59,25 @@ def apply_theme():
     }}
     #MainMenu,footer,header{{visibility:hidden;}}
     .stDeployButton{{display:none;}}
-    section[data-testid="stSidebar"]{{display:none;}}
+    /* Hide sidebar toggle button entirely to prevent confusion */
+    [data-testid="collapsedControl"]{{display:none!important;}}
+    section[data-testid="stSidebar"]{{display:none!important;}}
     .main .block-container{{
         padding-top:0!important;
         max-width:1140px;
-        padding-left:2rem;
-        padding-right:2rem;
+        padding-left:1.5rem;
+        padding-right:1.5rem;
     }}
 
     /* ── Topbar ── */
     .fs-topbar{{
         background:{COLORS['navy']};
-        padding:0 2rem;
+        padding:0 1.5rem;
         height:54px;
         display:flex;
         align-items:center;
         justify-content:space-between;
-        margin:-4rem -2rem 2rem -2rem;
+        margin:-4rem -1.5rem 2rem -1.5rem;
         position:sticky;
         top:0;
         z-index:999;
@@ -87,223 +90,182 @@ def apply_theme():
         letter-spacing:-0.3px;
         display:flex;
         align-items:center;
-        gap:0.5rem;
+        gap:0.45rem;
+        text-decoration:none;
     }}
     .fs-logo-dot{{
-        width:7px;height:7px;
-        border-radius:50%;
+        width:7px;height:7px;border-radius:50%;
         background:{COLORS['blue']};
+        flex-shrink:0;
     }}
     .fs-nav-center{{
-        display:flex;
-        align-items:center;
-        gap:2px;
+        display:flex;align-items:center;gap:2px;
     }}
     .fs-nav-link{{
-        font-size:0.8rem;
-        font-weight:500;
+        font-size:0.8rem;font-weight:500;
         color:rgba(255,255,255,0.5);
-        padding:0.35rem 0.85rem;
-        border-radius:6px;
-        cursor:pointer;
-        transition:all 0.15s;
-        border:none;
-        background:none;
+        padding:0.35rem 0.85rem;border-radius:6px;
+        cursor:pointer;transition:all 0.15s;
+        border:none;background:none;
+        font-family:'Plus Jakarta Sans',sans-serif;
     }}
     .fs-nav-link:hover{{color:white;background:rgba(255,255,255,0.07);}}
     .fs-nav-link.active{{
-        color:white;
-        background:rgba(45,127,249,0.22);
+        color:white;background:rgba(45,127,249,0.22);
     }}
     .fs-badge{{
-        background:{COLORS['blue']};
-        color:white;
-        font-size:0.65rem;
-        font-weight:700;
-        padding:0.18rem 0.55rem;
-        border-radius:100px;
-        letter-spacing:0.4px;
-        text-transform:uppercase;
+        background:{COLORS['blue']};color:white;
+        font-size:0.65rem;font-weight:700;
+        padding:0.18rem 0.55rem;border-radius:100px;
+        letter-spacing:0.4px;text-transform:uppercase;
     }}
 
     /* ── Page header ── */
     .fs-page-header{{
-        margin-bottom:1.75rem;
-        padding-bottom:1.25rem;
+        margin-bottom:1.75rem;padding-bottom:1.25rem;
         border-bottom:1px solid {COLORS['border']};
     }}
     .fs-page-title{{
-        font-size:1.35rem;
-        font-weight:800;
-        color:{COLORS['navy']};
-        letter-spacing:-0.4px;
-        margin-bottom:0.2rem;
+        font-size:1.35rem;font-weight:800;
+        color:{COLORS['navy']};letter-spacing:-0.4px;margin-bottom:0.2rem;
     }}
-    .fs-page-subtitle{{
-        font-size:0.85rem;
-        color:{COLORS['text_secondary']};
-    }}
+    .fs-page-subtitle{{font-size:0.85rem;color:{COLORS['text_secondary']};}}
 
     /* ── Cards ── */
     .fs-card{{
         background:{COLORS['bg_white']};
         border:1px solid {COLORS['border']};
-        border-radius:10px;
-        padding:1.5rem;
-        margin-bottom:1rem;
-        transition:box-shadow 0.15s;
+        border-radius:10px;padding:1.5rem;margin-bottom:1rem;
+        transition:box-shadow 0.2s,transform 0.2s;
     }}
-    .fs-card:hover{{box-shadow:0 2px 12px rgba(10,31,68,0.07);}}
+    .fs-card:hover{{box-shadow:0 4px 16px rgba(10,31,68,0.08);}}
 
     /* ── Section label ── */
     .section-label{{
-        font-size:0.7rem;
-        font-weight:700;
-        color:{COLORS['text_muted']};
-        text-transform:uppercase;
-        letter-spacing:1px;
-        margin-bottom:0.75rem;
-        display:flex;
-        align-items:center;
-        gap:0.5rem;
+        font-size:0.7rem;font-weight:700;color:{COLORS['text_muted']};
+        text-transform:uppercase;letter-spacing:1px;
+        margin-bottom:0.75rem;display:flex;align-items:center;gap:0.5rem;
     }}
     .section-label::after{{
-        content:'';
-        flex:1;
-        height:1px;
-        background:{COLORS['border']};
+        content:'';flex:1;height:1px;background:{COLORS['border']};
     }}
 
     /* ── Score panel ── */
     .score-panel{{
         background:{COLORS['bg_white']};
         border:1px solid {COLORS['border']};
-        border-radius:10px;
-        padding:2rem 1.75rem;
-        text-align:center;
-        position:relative;
-        overflow:hidden;
+        border-radius:10px;padding:2rem 1.75rem;
+        text-align:center;position:relative;overflow:hidden;
+        animation:panel-appear 0.5s ease both;
+    }}
+    @keyframes panel-appear{{
+        from{{opacity:0;transform:translateY(12px)}}
+        to{{opacity:1;transform:translateY(0)}}
     }}
     .score-panel::before{{
-        content:'';
-        position:absolute;
-        top:0;left:0;right:0;
-        height:3px;
+        content:'';position:absolute;top:0;left:0;right:0;height:3px;
         background:linear-gradient(90deg,{COLORS['blue']},{COLORS['teal']});
     }}
     .score-eyebrow{{
-        font-size:0.68rem;
-        font-weight:700;
-        letter-spacing:1.5px;
-        text-transform:uppercase;
-        color:{COLORS['text_muted']};
-        margin-bottom:0.5rem;
+        font-size:0.68rem;font-weight:700;letter-spacing:1.5px;
+        text-transform:uppercase;color:{COLORS['text_muted']};margin-bottom:0.5rem;
     }}
+    /* Score number — animated counter via JS */
     .score-value{{
         font-family:'JetBrains Mono',monospace;
-        font-size:4.2rem;
-        font-weight:600;
-        letter-spacing:-3px;
-        line-height:1;
-        margin-bottom:0.25rem;
+        font-size:4.2rem;font-weight:600;
+        letter-spacing:-3px;line-height:1;margin-bottom:0.25rem;
+        animation:score-pop 0.7s cubic-bezier(0.16,1,0.3,1) both 0.2s;
+    }}
+    @keyframes score-pop{{
+        from{{opacity:0;transform:scale(0.6);}}
+        to{{opacity:1;transform:scale(1);}}
     }}
     .score-band-pill{{
-        display:inline-block;
-        padding:0.28rem 0.9rem;
-        border-radius:6px;
-        font-size:0.75rem;
-        font-weight:700;
-        letter-spacing:0.5px;
-        text-transform:uppercase;
+        display:inline-block;padding:0.28rem 0.9rem;
+        border-radius:6px;font-size:0.75rem;font-weight:700;
+        letter-spacing:0.5px;text-transform:uppercase;
         margin:0.65rem 0;
+        animation:fade-in 0.4s ease both 0.5s;
     }}
-    .score-track-wrap{{
-        margin:1rem auto 0;
-        max-width:260px;
-    }}
+    @keyframes fade-in{{from{{opacity:0}}to{{opacity:1}}}}
+    .score-track-wrap{{margin:1rem auto 0;max-width:260px;}}
     .score-track{{
-        height:4px;
-        border-radius:100px;
+        height:4px;border-radius:100px;
         background:linear-gradient(90deg,
-            {COLORS['poor']} 0%,
-            {COLORS['fair']} 28%,
-            {COLORS['good']} 58%,
-            {COLORS['excellent']} 100%);
-        position:relative;
-        margin-bottom:6px;
+            {COLORS['poor']} 0%,{COLORS['fair']} 28%,
+            {COLORS['good']} 58%,{COLORS['excellent']} 100%);
+        position:relative;margin-bottom:6px;
     }}
     .score-marker{{
-        position:absolute;
-        top:50%;
-        width:11px;height:11px;
-        border-radius:50%;
-        background:{COLORS['navy']};
-        border:2px solid white;
+        position:absolute;top:50%;
+        width:11px;height:11px;border-radius:50%;
+        background:{COLORS['navy']};border:2px solid white;
         transform:translate(-50%,-50%);
-        box-shadow:0 1px 4px rgba(0,0,0,0.2);
+        box-shadow:0 1px 4px rgba(0,0,0,0.25);
+        transition:left 1.2s cubic-bezier(0.16,1,0.3,1);
     }}
     .score-track-labels{{
-        display:flex;
-        justify-content:space-between;
-        font-size:0.6rem;
-        color:{COLORS['text_muted']};
+        display:flex;justify-content:space-between;
+        font-size:0.6rem;color:{COLORS['text_muted']};
         font-family:'JetBrains Mono',monospace;
     }}
 
     /* ── Metric grid ── */
     .metric-grid{{
-        display:grid;
-        grid-template-columns:repeat(3,1fr);
-        gap:0.9rem;
-        margin-bottom:1.5rem;
+        display:grid;grid-template-columns:repeat(3,1fr);
+        gap:0.9rem;margin-bottom:1.5rem;
     }}
     .metric-card{{
         background:{COLORS['bg_white']};
         border:1px solid {COLORS['border']};
-        border-radius:10px;
-        padding:1.1rem 1.1rem 0.9rem;
-        transition:box-shadow 0.15s;
+        border-radius:10px;padding:1.1rem 1.1rem 0.9rem;
+        transition:box-shadow 0.2s,transform 0.2s,border-color 0.2s;
+        animation:card-rise 0.4s ease both;
     }}
-    .metric-card:hover{{box-shadow:0 2px 10px rgba(10,31,68,0.07);}}
+    .metric-card:hover{{
+        box-shadow:0 4px 14px rgba(10,31,68,0.09);
+        transform:translateY(-2px);
+        border-color:{COLORS['blue']};
+    }}
+    @keyframes card-rise{{
+        from{{opacity:0;transform:translateY(10px)}}
+        to{{opacity:1;transform:translateY(0)}}
+    }}
+    .metric-card:nth-child(1){{animation-delay:0.05s}}
+    .metric-card:nth-child(2){{animation-delay:0.10s}}
+    .metric-card:nth-child(3){{animation-delay:0.15s}}
+    .metric-card:nth-child(4){{animation-delay:0.20s}}
+    .metric-card:nth-child(5){{animation-delay:0.25s}}
+    .metric-card:nth-child(6){{animation-delay:0.30s}}
     .metric-label{{
-        font-size:0.68rem;
-        font-weight:700;
-        color:{COLORS['text_muted']};
-        text-transform:uppercase;
-        letter-spacing:0.8px;
-        margin-bottom:0.45rem;
+        font-size:0.68rem;font-weight:700;color:{COLORS['text_muted']};
+        text-transform:uppercase;letter-spacing:0.8px;margin-bottom:0.45rem;
     }}
     .metric-value{{
         font-family:'JetBrains Mono',monospace;
-        font-size:1.55rem;
-        font-weight:600;
-        color:{COLORS['navy']};
-        letter-spacing:-0.8px;
-        line-height:1;
-        margin-bottom:0.45rem;
+        font-size:1.55rem;font-weight:600;
+        color:{COLORS['navy']};letter-spacing:-0.8px;
+        line-height:1;margin-bottom:0.45rem;
     }}
     .metric-badge{{
-        display:inline-flex;
-        align-items:center;
-        font-size:0.7rem;
-        font-weight:600;
-        padding:0.18rem 0.5rem;
-        border-radius:5px;
+        display:inline-flex;align-items:center;
+        font-size:0.7rem;font-weight:600;
+        padding:0.18rem 0.5rem;border-radius:5px;
     }}
     .b-good{{background:{COLORS['success_light']};color:{COLORS['success']};}}
     .b-warn{{background:{COLORS['warning_light']};color:{COLORS['warning']};}}
     .b-bad{{background:{COLORS['danger_light']};color:{COLORS['danger']};}}
     .b-info{{background:{COLORS['blue_light']};color:{COLORS['blue']};}}
 
-    /* ── Insight box ── */
+    /* ── Insight box (fixes **bold** rendering as asterisks) ── */
     .insight-box{{
-        border-radius:8px;
-        padding:0.85rem 1rem;
-        margin-bottom:1.25rem;
-        font-size:0.85rem;
-        line-height:1.7;
+        border-radius:8px;padding:0.85rem 1rem;
+        margin-bottom:1.25rem;font-size:0.875rem;line-height:1.7;
         border-left:3px solid;
+        animation:fade-in 0.4s ease both 0.3s;
     }}
+    .insight-box strong{{font-weight:700;}}
     .insight-good{{background:{COLORS['success_light']};border-color:{COLORS['success']};color:#065f46;}}
     .insight-warn{{background:{COLORS['warning_light']};border-color:{COLORS['warning']};color:#92400e;}}
     .insight-bad{{background:{COLORS['danger_light']};border-color:{COLORS['danger']};color:#991b1b;}}
@@ -313,48 +275,40 @@ def apply_theme():
     .rec-item{{
         background:{COLORS['bg_white']};
         border:1px solid {COLORS['border']};
-        border-radius:8px;
-        padding:0.9rem 1rem;
-        margin-bottom:0.55rem;
-        transition:all 0.15s;
-        display:flex;
-        gap:0.8rem;
-        align-items:flex-start;
+        border-radius:8px;padding:0.9rem 1rem;margin-bottom:0.55rem;
+        transition:all 0.2s;display:flex;gap:0.8rem;align-items:flex-start;
+        animation:slide-in 0.35s ease both;
     }}
     .rec-item:hover{{
         border-color:{COLORS['blue']};
         box-shadow:0 0 0 3px {COLORS['blue_light']};
+        transform:translateX(3px);
+    }}
+    .rec-item:nth-child(1){{animation-delay:0.1s}}
+    .rec-item:nth-child(2){{animation-delay:0.18s}}
+    .rec-item:nth-child(3){{animation-delay:0.26s}}
+    .rec-item:nth-child(4){{animation-delay:0.34s}}
+    .rec-item:nth-child(5){{animation-delay:0.42s}}
+    @keyframes slide-in{{
+        from{{opacity:0;transform:translateX(-10px)}}
+        to{{opacity:1;transform:translateX(0)}}
     }}
     .rec-num{{
-        width:22px;height:22px;min-width:22px;
-        border-radius:6px;
-        background:{COLORS['navy']};
-        color:white;
-        font-size:0.68rem;
-        font-weight:700;
-        display:flex;
-        align-items:center;
-        justify-content:center;
-        margin-top:1px;
+        width:22px;height:22px;min-width:22px;border-radius:6px;
+        background:{COLORS['navy']};color:white;
+        font-size:0.68rem;font-weight:700;
+        display:flex;align-items:center;justify-content:center;margin-top:1px;
     }}
     .rec-body{{flex:1;}}
     .rec-title-row{{
-        font-size:0.85rem;
-        font-weight:700;
-        color:{COLORS['text']};
-        margin-bottom:0.25rem;
-        display:flex;
-        align-items:center;
-        gap:0.45rem;
-        flex-wrap:wrap;
+        font-size:0.85rem;font-weight:700;color:{COLORS['text']};
+        margin-bottom:0.25rem;display:flex;align-items:center;
+        gap:0.45rem;flex-wrap:wrap;
     }}
     .rec-tag{{
-        font-size:0.6rem;
-        font-weight:700;
-        padding:0.12rem 0.45rem;
-        border-radius:4px;
-        text-transform:uppercase;
-        letter-spacing:0.4px;
+        font-size:0.6rem;font-weight:700;
+        padding:0.12rem 0.45rem;border-radius:4px;
+        text-transform:uppercase;letter-spacing:0.4px;
     }}
     .tag-debt{{background:#EDE9FE;color:#5B21B6;}}
     .tag-savings{{background:{COLORS['teal_light']};color:#065f46;}}
@@ -362,57 +316,39 @@ def apply_theme():
     .tag-behaviour{{background:{COLORS['warning_light']};color:{COLORS['warning']};}}
     .tag-expenses{{background:{COLORS['danger_light']};color:{COLORS['danger']};}}
     .rec-desc{{
-        font-size:0.8rem;
-        color:{COLORS['text_secondary']};
-        line-height:1.6;
-        margin-bottom:0.35rem;
+        font-size:0.8rem;color:{COLORS['text_secondary']};
+        line-height:1.6;margin-bottom:0.35rem;
     }}
     .rec-impact{{
-        font-size:0.72rem;
-        font-weight:600;
-        color:{COLORS['teal']};
-        display:inline-flex;
-        align-items:center;
-        gap:3px;
+        font-size:0.72rem;font-weight:600;color:{COLORS['teal']};
+        display:inline-flex;align-items:center;gap:3px;
     }}
     .rec-impact::before{{content:'↑';font-weight:700;}}
 
     /* ── Step indicator ── */
-    .step-row{{
-        display:flex;
-        align-items:center;
-        gap:0.4rem;
-        margin-bottom:1.5rem;
-    }}
+    .step-row{{display:flex;align-items:center;gap:0.4rem;margin-bottom:1.5rem;}}
     .step-seg{{
-        height:3px;
-        border-radius:100px;
-        flex:1;
-        background:{COLORS['border']};
-        transition:background 0.25s;
+        height:3px;border-radius:100px;flex:1;
+        background:{COLORS['border']};transition:background 0.3s;
     }}
     .step-seg.done{{background:{COLORS['blue']};}}
     .step-meta{{
-        font-size:0.73rem;
-        color:{COLORS['text_muted']};
-        font-weight:500;
-        margin-bottom:0.4rem;
+        font-size:0.73rem;color:{COLORS['text_muted']};
+        font-weight:500;margin-bottom:0.4rem;
     }}
     .step-meta strong{{color:{COLORS['navy']};}}
 
     /* ── Form inputs ── */
     .stNumberInput label,.stSelectbox label,
     .stSlider label,.stRadio label,.stTextInput label{{
-        font-size:0.8rem!important;
-        font-weight:600!important;
+        font-size:0.8rem!important;font-weight:600!important;
         color:{COLORS['text_secondary']}!important;
         font-family:'Plus Jakarta Sans',sans-serif!important;
     }}
     .stTextInput input,.stNumberInput input{{
         background:{COLORS['bg_white']}!important;
         border:1.5px solid {COLORS['border_strong']}!important;
-        border-radius:7px!important;
-        color:{COLORS['text']}!important;
+        border-radius:7px!important;color:{COLORS['text']}!important;
         font-family:'JetBrains Mono',monospace!important;
         font-size:0.88rem!important;
         transition:border-color 0.15s,box-shadow 0.15s!important;
@@ -424,29 +360,42 @@ def apply_theme():
     .stSelectbox>div>div{{
         background:{COLORS['bg_white']}!important;
         border:1.5px solid {COLORS['border_strong']}!important;
-        border-radius:7px!important;
-        color:{COLORS['text']}!important;
+        border-radius:7px!important;color:{COLORS['text']}!important;
     }}
 
-    /* ── Buttons ── */
+    /* ── PREMIUM BUTTONS ── */
     .stButton>button{{
         background:{COLORS['blue']}!important;
-        color:white!important;
-        border:none!important;
+        color:white!important;border:none!important;
         border-radius:7px!important;
-        padding:0.55rem 1.4rem!important;
-        font-weight:600!important;
-        font-size:0.875rem!important;
+        padding:0.58rem 1.4rem!important;
+        font-weight:600!important;font-size:0.875rem!important;
         font-family:'Plus Jakarta Sans',sans-serif!important;
-        transition:all 0.15s!important;
+        transition:all 0.2s cubic-bezier(0.16,1,0.3,1)!important;
         width:100%!important;
+        position:relative!important;
+        overflow:hidden!important;
     }}
+    /* Shimmer sweep on hover */
+    .stButton>button::after{{
+        content:''!important;
+        position:absolute!important;
+        top:0!important;left:-100%!important;
+        width:60%!important;height:100%!important;
+        background:linear-gradient(90deg,
+            transparent,rgba(255,255,255,0.18),transparent)!important;
+        transition:left 0.45s ease!important;
+    }}
+    .stButton>button:hover::after{{left:130%!important;}}
     .stButton>button:hover{{
         background:{COLORS['blue_hover']}!important;
-        box-shadow:0 4px 12px rgba(45,127,249,0.28)!important;
-        transform:translateY(-1px)!important;
+        box-shadow:0 6px 20px rgba(45,127,249,0.35)!important;
+        transform:translateY(-2px) scale(1.01)!important;
     }}
-    .stButton>button:active{{transform:translateY(0)!important;box-shadow:none!important;}}
+    .stButton>button:active{{
+        transform:translateY(0) scale(0.99)!important;
+        box-shadow:0 2px 8px rgba(45,127,249,0.2)!important;
+    }}
     .btn-secondary>button{{
         background:transparent!important;
         color:{COLORS['text_secondary']}!important;
@@ -458,89 +407,95 @@ def apply_theme():
         color:{COLORS['blue']}!important;
         background:{COLORS['blue_light']}!important;
         box-shadow:none!important;
-        transform:none!important;
+        transform:translateY(-1px)!important;
     }}
     .btn-teal>button{{
-        background:{COLORS['teal']}!important;
-        color:white!important;
+        background:{COLORS['teal']}!important;color:white!important;
     }}
     .btn-teal>button:hover{{
         background:#00A892!important;
-        box-shadow:0 4px 12px rgba(0,194,168,0.28)!important;
+        box-shadow:0 6px 20px rgba(0,194,168,0.32)!important;
     }}
 
     /* ── Trust note ── */
     .trust-note{{
-        display:flex;
-        align-items:center;
-        gap:0.5rem;
-        font-size:0.77rem;
-        color:{COLORS['success']};
+        display:flex;align-items:center;gap:0.5rem;
+        font-size:0.77rem;color:{COLORS['success']};
         background:{COLORS['success_light']};
-        border:1px solid #A7F3D0;
-        border-radius:7px;
-        padding:0.5rem 0.85rem;
-        margin-bottom:1.5rem;
-        font-weight:500;
+        border:1px solid #A7F3D0;border-radius:7px;
+        padding:0.5rem 0.85rem;margin-bottom:1.5rem;font-weight:500;
     }}
 
-    /* ── Form section ── */
+    /* ── Form section label ── */
     .form-section{{
-        font-size:0.7rem;
-        font-weight:700;
-        text-transform:uppercase;
-        letter-spacing:1px;
-        color:{COLORS['blue']};
-        margin:1.25rem 0 0.75rem;
-        padding-bottom:0.45rem;
+        font-size:0.7rem;font-weight:700;text-transform:uppercase;
+        letter-spacing:1px;color:{COLORS['blue']};
+        margin:1.25rem 0 0.75rem;padding-bottom:0.45rem;
         border-bottom:1px solid {COLORS['blue_mid']};
     }}
 
     /* ── Balance widget ── */
     .balance-widget{{
-        background:{COLORS['bg']};
-        border:1px solid {COLORS['border']};
-        border-radius:8px;
-        padding:0.9rem 1.1rem;
-        margin-top:0.9rem;
-        display:flex;
-        justify-content:space-between;
-        align-items:center;
+        background:{COLORS['bg']};border:1px solid {COLORS['border']};
+        border-radius:8px;padding:0.9rem 1.1rem;margin-top:0.9rem;
+        display:flex;justify-content:space-between;align-items:center;
     }}
     .bal-label{{
-        font-size:0.66rem;
-        font-weight:600;
-        text-transform:uppercase;
-        letter-spacing:0.8px;
-        color:{COLORS['text_muted']};
-        margin-bottom:0.2rem;
+        font-size:0.66rem;font-weight:600;text-transform:uppercase;
+        letter-spacing:0.8px;color:{COLORS['text_muted']};margin-bottom:0.2rem;
     }}
     .bal-value{{
         font-family:'JetBrains Mono',monospace;
-        font-size:1.15rem;
-        font-weight:600;
-        color:{COLORS['navy']};
-        letter-spacing:-0.5px;
+        font-size:1.15rem;font-weight:600;
+        color:{COLORS['navy']};letter-spacing:-0.5px;
     }}
 
     /* ── Divider ── */
     .fs-divider{{height:1px;background:{COLORS['border']};margin:1.75rem 0;}}
 
+    /* ── Stats strip — mobile-first responsive ── */
+    .stats-strip{{
+        display:grid;
+        grid-template-columns:repeat(3,1fr);
+        background:{COLORS['bg_white']};
+        border:1px solid {COLORS['border']};
+        border-radius:10px;overflow:hidden;
+        margin-bottom:3rem;
+    }}
+    .stats-cell{{
+        padding:1.3rem 1rem;text-align:center;
+        border-right:1px solid {COLORS['border']};
+    }}
+    .stats-cell:last-child{{border-right:none;}}
+    .stats-num{{
+        font-family:'JetBrains Mono',monospace;
+        font-size:1.6rem;font-weight:600;
+        color:{COLORS['navy']};letter-spacing:-1px;
+    }}
+    .stats-desc{{
+        font-size:0.68rem;color:{COLORS['text_muted']};
+        text-transform:uppercase;letter-spacing:0.8px;
+        margin-top:0.2rem;font-weight:600;
+    }}
+    /* Mobile: stack vertically if very narrow */
+    @media(max-width:480px){{
+        .stats-strip{{grid-template-columns:1fr;}}
+        .stats-cell{{border-right:none;border-bottom:1px solid {COLORS['border']};}}
+        .stats-cell:last-child{{border-bottom:none;}}
+        .metric-grid{{grid-template-columns:repeat(2,1fr);}}
+    }}
+
     /* ── Tabs ── */
     .stTabs [data-baseweb="tab-list"]{{
-        background:{COLORS['bg']}!important;
-        border-radius:8px!important;
-        padding:3px!important;
-        gap:2px!important;
+        background:{COLORS['bg']}!important;border-radius:8px!important;
+        padding:3px!important;gap:2px!important;
         border:1px solid {COLORS['border']}!important;
     }}
     .stTabs [data-baseweb="tab"]{{
-        background:transparent!important;
-        color:{COLORS['text_muted']}!important;
+        background:transparent!important;color:{COLORS['text_muted']}!important;
         border-radius:6px!important;
         font-family:'Plus Jakarta Sans',sans-serif!important;
-        font-size:0.8rem!important;
-        font-weight:600!important;
+        font-size:0.8rem!important;font-weight:600!important;
     }}
     .stTabs [aria-selected="true"]{{
         background:{COLORS['bg_white']}!important;
@@ -548,41 +503,61 @@ def apply_theme():
         box-shadow:0 1px 3px rgba(0,0,0,0.08)!important;
     }}
 
+    /* ── Plotly ── */
+    .js-plotly-plot .plotly,
+    .js-plotly-plot .plotly .main-svg{{background:transparent!important;}}
+
     /* ── Scrollbar ── */
     ::-webkit-scrollbar{{width:5px;}}
     ::-webkit-scrollbar-track{{background:{COLORS['bg']};}}
     ::-webkit-scrollbar-thumb{{background:{COLORS['border_strong']};border-radius:3px;}}
 
-    /* ── Plotly bg ── */
-    .js-plotly-plot .plotly,
-    .js-plotly-plot .plotly .main-svg{{background:transparent!important;}}
-
     /* ── Share tip ── */
     .share-tip{{
-        text-align:center;
-        font-size:0.77rem;
-        color:{COLORS['text_muted']};
-        padding:0.7rem;
-        border:1px dashed {COLORS['border_strong']};
-        border-radius:8px;
-        margin-top:1.5rem;
+        text-align:center;font-size:0.77rem;color:{COLORS['text_muted']};
+        padding:0.7rem;border:1px dashed {COLORS['border_strong']};
+        border-radius:8px;margin-top:1.5rem;
     }}
     .share-tip strong{{color:{COLORS['blue']};}}
+
+    /* ── Progress toward next band ── */
+    .next-band-bar{{
+        background:{COLORS['bg']};border:1px solid {COLORS['border']};
+        border-radius:7px;padding:0.65rem 0.9rem;margin-bottom:0.75rem;
+    }}
+    .next-band-bar .bar-outer{{
+        height:3px;background:{COLORS['border']};
+        border-radius:100px;margin-top:0.4rem;overflow:hidden;
+    }}
+    .next-band-bar .bar-inner{{
+        height:3px;border-radius:100px;
+        background:linear-gradient(90deg,{COLORS['blue']},{COLORS['teal']});
+        animation:grow-bar 1.2s cubic-bezier(0.16,1,0.3,1) both 0.6s;
+    }}
+    @keyframes grow-bar{{
+        from{{width:0!important;}}
+        to{{width:var(--bar-width)!important;}}
+    }}
     </style>
     """, unsafe_allow_html=True)
 
 
-def nav_bar(active_page: str = "score",
+def nav_bar(active_page: str = "landing",
             score: int = None, band: str = None):
     pages = [
-        ("score",    "Credit Score"),
-        ("loans",    "Loan Simulator"),
-        ("advisor",  "AI Advisor"),
+        ("landing",        "Home"),
+        ("results",        "My Score"),
+        ("loan_simulator", "Loan Simulator"),
+        ("advisor",        "AI Advisor"),
     ]
     links = ""
     for key, label in pages:
         cls = "active" if key == active_page else ""
-        links += f'<span class="fs-nav-link {cls}">{label}</span>'
+        links += (
+            f'<button class="fs-nav-link {cls}" '
+            f'onclick="window.parent.postMessage(\'nav:{key}\',\'*\')">'
+            f'{label}</button>'
+        )
 
     right_html = ""
     if score and band:
@@ -614,7 +589,6 @@ def page_header(title: str, subtitle: str = ""):
            if subtitle else "")
     st.markdown(f"""
     <div class="fs-page-header">
-        <div class="fs-page-title">{title}</div>
-        {sub}
+        <div class="fs-page-title">{title}</div>{sub}
     </div>
     """, unsafe_allow_html=True)

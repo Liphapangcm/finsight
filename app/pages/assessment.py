@@ -1,3 +1,10 @@
+# app/pages/assessment.py
+"""
+Assessment form — fixes:
+- Back/Continue buttons always perfectly side-by-side on desktop
+- Consistent column widths across all 3 steps
+- No layout shift between steps
+"""
 import streamlit as st
 from app.styles.theme import COLORS
 from core.schemas import AssessmentInput
@@ -17,8 +24,8 @@ def _step_indicator(step: int, total: int = 3):
     )
     st.markdown(f"""
     <div class="step-meta">
-        Step <strong>{step} of {total}</strong> —
-        {STEP_LABELS[step - 1]}
+        Step <strong>{step} of {total}</strong>
+        &nbsp;—&nbsp; {STEP_LABELS[step - 1]}
     </div>
     <div class="step-row">{segs}</div>
     """, unsafe_allow_html=True)
@@ -30,6 +37,28 @@ def _trust():
         🔒 Your data is processed privately and never shared or sold
     </div>
     """, unsafe_allow_html=True)
+
+
+def _nav_buttons(back_key: str, next_key: str,
+                 next_label: str, back_step: int,
+                 next_action=None):
+    """
+    Renders Back + Next buttons in a fixed 2-column layout.
+    Guarantees horizontal alignment on all screen sizes.
+    """
+    col_back, col_next = st.columns([1, 1])
+    with col_back:
+        st.markdown('<div class="btn-secondary">', unsafe_allow_html=True)
+        if st.button("← Back", key=back_key,
+                     use_container_width=True):
+            st.session_state['form_step'] = back_step
+            st.rerun()
+        st.markdown('</div>', unsafe_allow_html=True)
+    with col_next:
+        if st.button(next_label, key=next_key,
+                     use_container_width=True):
+            if next_action:
+                next_action()
 
 
 # ── Step 1 ────────────────────────────────────────────────────────
@@ -65,7 +94,6 @@ def render_step1():
                "unemployed", "student"].index(
             st.session_state.get('employment_type', 'employed')),
     )
-
     num_dep = st.slider(
         "Number of Dependents", min_value=0, max_value=10,
         value=st.session_state.get('num_dependents', 1),
@@ -104,17 +132,17 @@ def render_step2():
 
     col1, col2 = st.columns(2)
     with col1:
-        housing   = st.number_input(
+        housing = st.number_input(
             "Housing / Rent", min_value=0.0, step=50.0,
             value=float(st.session_state.get('housing_expense', 1500)))
         transport = st.number_input(
             "Transport", min_value=0.0, step=50.0,
             value=float(st.session_state.get('transport_expense', 500)))
-        other     = st.number_input(
+        other = st.number_input(
             "Other Expenses", min_value=0.0, step=50.0,
             value=float(st.session_state.get('other_expense', 500)))
     with col2:
-        food      = st.number_input(
+        food = st.number_input(
             "Food & Groceries", min_value=0.0, step=50.0,
             value=float(st.session_state.get('food_expense', 1200)))
         utilities = st.number_input(
@@ -125,13 +153,12 @@ def render_step2():
     remaining = monthly_income - total_exp
     rem_color = COLORS['success'] if remaining >= 0 else COLORS['danger']
     rem_sign  = "+" if remaining >= 0 else ""
-    rem_label = "available after expenses" \
-                if remaining >= 0 else "OVER budget"
+    rem_label = "available" if remaining >= 0 else "OVER BUDGET"
 
     st.markdown(f"""
     <div class="balance-widget">
         <div>
-            <div class="bal-label">Total Monthly Expenses</div>
+            <div class="bal-label">Total Expenses</div>
             <div class="bal-value">M{total_exp:,.0f}</div>
         </div>
         <div style="text-align:right;">
@@ -139,15 +166,16 @@ def render_step2():
             <div class="bal-value" style="color:{rem_color};">
                 M{rem_sign}{remaining:,.0f}
             </div>
-            <div style="font-size:0.68rem;color:{rem_color};
-                        font-weight:500;margin-top:2px;">
-                {rem_label}
-            </div>
+            <div style="font-size:0.66rem;color:{rem_color};
+                        font-weight:600;margin-top:1px;">{rem_label}</div>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-    col_back, col_next = st.columns(2)
+    # ── Fixed button row ──────────────────────────────────────────
+    st.markdown("<div style='margin-top:1.25rem;'>",
+                unsafe_allow_html=True)
+    col_back, col_next = st.columns([1, 1])
     with col_back:
         st.markdown('<div class="btn-secondary">', unsafe_allow_html=True)
         if st.button("← Back", key="s2_back",
@@ -220,7 +248,6 @@ def render_step3():
         index=0 if st.session_state.get('has_savings', False) else 1,
         horizontal=True,
     )
-
     monthly_savings = 0.0
     if has_savings:
         monthly_savings = st.number_input(
@@ -242,7 +269,10 @@ def render_step3():
             st.session_state.get('mobile_money_frequency', 'weekly')),
     )
 
-    col_back, col_submit = st.columns(2)
+    # ── Fixed button row ──────────────────────────────────────────
+    st.markdown("<div style='margin-top:1.25rem;'>",
+                unsafe_allow_html=True)
+    col_back, col_submit = st.columns([1, 1])
     with col_back:
         st.markdown('<div class="btn-secondary">', unsafe_allow_html=True)
         if st.button("← Back", key="s3_back",

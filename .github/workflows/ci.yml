@@ -38,7 +38,7 @@ jobs:
       # rules. We only lint the pure Python business logic.
       - name: Lint with ruff
         run: |
-          ruff check core/ tests/ --ignore E501,W503
+          ruff check core/ tests/ --ignore E501
 
       # ── 5. Type check — scoped to core/ only ─────────────────────
       # app/ uses Streamlit which has incomplete stubs.

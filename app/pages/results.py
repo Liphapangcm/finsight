@@ -65,64 +65,9 @@ def render_results():
     col_score, col_detail = st.columns([1, 1.8])
 
     with col_score:
-        # ── CSS-only animation — NO <script> tags ─────────────────
-        # The score-pop keyframe is defined in theme.py CSS.
-        # The marker slides via CSS transition on 'left' property.
-        # No JavaScript needed or used here.
-        st.markdown(f"""
-        <div class="score-panel">
-            <div class="score-eyebrow">Credit Score</div>
-
-            <div class="score-value" style="color:{band_color};">
-                {score}
-            </div>
-
-            <div style="font-size:0.72rem;
-                        color:{COLORS['text_muted']};
-                        margin-bottom:0.25rem;
-                        font-family:'JetBrains Mono',monospace;">
-                out of 850
-            </div>
-
-            <div class="score-band-pill"
-                 style="background:{pill_bg};color:{band_color};">
-                {band}
-            </div>
-
-            <div style="font-size:0.75rem;
-                        color:{COLORS['text_muted']};
-                        margin-bottom:0.75rem;">
-                Risk Level:
-                <strong style="color:{COLORS['text']};">{risk}</strong>
-            </div>
-
-            <div class="score-track-wrap">
-                <div class="score-track">
-                    <div class="score-marker"
-                         style="left:{bar_pct}%;
-                                background:{band_color};">
-                    </div>
-                </div>
-                <div class="score-track-labels">
-                    <span>300</span>
-                    <span>Poor</span>
-                    <span>Fair</span>
-                    <span>Good</span>
-                    <span>850</span>
-                </div>
-            </div>
-
-            <div style="margin-top:1rem;padding-top:1rem;
-                        border-top:1px solid {COLORS['border']};
-                        font-size:0.68rem;
-                        color:{COLORS['text_muted']};
-                        font-family:'JetBrains Mono',monospace;">
-                Model&nbsp;{result.model_version}
-                &nbsp;·&nbsp;
-                ID&nbsp;{result.assessment_id[:8]}
-            </div>
-        </div>
-        """, unsafe_allow_html=True)
+        # Use the animated gauge component
+        from app.components.score_gauge import render_score_gauge
+        render_score_gauge(score, band, risk)
 
     with col_detail:
         st.markdown(f"""

@@ -1,0 +1,35 @@
+# ruff.toml
+# Ruff configuration for FinSight
+# app/ is excluded because it contains long inline HTML/CSS strings
+# that are intentional and cannot be shortened without breaking the UI.
+
+line-length = 120
+
+exclude = [
+    "app/",          # Streamlit UI — contains intentional long HTML strings
+    "ml/",           # Notebooks and training scripts
+    "venv/",
+    ".venv/",
+    "__pycache__",
+    "*.pyc",
+]
+
+[lint]
+select = [
+    "E",     # pycodestyle errors
+    "F",     # pyflakes
+    "W",     # pycodestyle warnings
+    "I",     # isort
+    "UP",    # pyupgrade
+]
+
+ignore = [
+    "E501",  # line too long — handled by line-length setting above
+      # line break before binary operator
+    "E741",  # ambiguous variable names (l, O, I) — used in ML code
+    "F401",  # unused imports — some are used by Streamlit at runtime
+]
+
+[lint.per-file-ignores]
+"tests/*" = ["F811"]   # redefined-while-unused in test fixtures is fine
+"ml/*"    = ["E402"]   # module-level imports not at top in notebooks
